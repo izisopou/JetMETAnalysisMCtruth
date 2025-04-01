@@ -479,29 +479,6 @@ void L2Creator::loopOverEtaBins() {
 				fabscor->SetParLimits(8,-50,50);
 			}
 
-			if(ieta==2 || ieta==5 || ieta==7 || ieta==6)
-			{
-				fabscor->SetParameter(0,-0.0221278);
-        			fabscor->SetParLimits(0,-2,25);
-        			fabscor->SetParameter(1,0.2);
-        			fabscor->SetParLimits(1,-50,100);
-        			fabscor->SetParameter(2,100);
-        			fabscor->SetParLimits(2,-100,400);
-        			fabscor->SetParameter(3,-0.0679365);
-        			fabscor->SetParLimits(3,-200,200);
-        			fabscor->SetParameter(4,2.82597);
-       				fabscor->SetParLimits(4,-10,20);
-        			fabscor->SetParameter(5,1.8277);
-        			fabscor->SetParLimits(5,-20,50);
-        			fabscor->SetParameter(6,-5.);
-        			fabscor->SetParLimits(6,-25,10);
-        			fabscor->SetParameter(7,3.82597);
-        			fabscor->SetParLimits(7,-100,500);
-        			fabscor->SetParameter(8,1.8277);
-				fabscor->SetParLimits(8,-50,50);
-			}
-
-
 
 			if(ieta==41)  
 			{
