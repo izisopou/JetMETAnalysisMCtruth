@@ -48,7 +48,7 @@ for k, v in algsizetype.items():
 #! CONDITIONS (DELIVERING JEC BY DEFAULT!)
 #!
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string('130X_mcRun3_2023_realistic_v14') 
+process.GlobalTag.globaltag = cms.string('142X_mcRun3_2025_realistic_v9') 
 
 if conditionsSource != "GT":
     if conditionsSource == "DB":
@@ -76,7 +76,7 @@ try:
 except ImportError:
     print ("Couldn't open the external list of files from DAS. If you just checkout out the JetResponseAnalyzer package you will need to make this file yourself. Currently Falling back to opening the list hard-coded in run_JRA_cfg.py. This is not a bad action as long as it is what you intended to have happen.")
     inputFiles = cms.untracked.vstring(
-		'root://cms-xrd-global.cern.ch//store/mc/Run3Summer23MiniAODv4/QCD_PT-15to7000_TuneCP5_13p6TeV_pythia8/MINIAODSIM/FlatPU0to70_castor_130X_mcRun3_2023_realistic_v14-v1/2550000/079aba26-165d-4926-b022-a26790084b55.root'
+		'root://cms-xrd-global.cern.ch//store/mc/Run3Winter25MiniAOD/QCD_Bin-PT-15to7000_Par-PT-flat2022_TuneCP5_13p6TeV_pythia8/MINIAODSIM/142X_mcRun3_2025_realistic_v9-v2/110000/009c2062-3758-41b2-a9ee-651e495dc571.root'
 	    )
     process.source = cms.Source("PoolSource", fileNames = inputFiles )
 

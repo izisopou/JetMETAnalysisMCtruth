@@ -10,7 +10,7 @@ ID=$4
 source $WorkDir/Setup_CMSSW.sh
 
 cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
-cp $WorkDir/Files/Summer23_V1/L1_output/My*.root .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.root .
 
 echo Input files are: $Files
 
@@ -51,7 +51,8 @@ jet_response_analyzer_x jra.config \
    -jtptmin 0 \
    -doDZcut true \
    -doNMcut false \
-   -doVetoMap true
+   -doVetoMap true \
+   -JetVetoMapName JetVetoMap_2023C.root
 
 cp jra.root ${Output}/JRA_jecl1${ID}.root
 

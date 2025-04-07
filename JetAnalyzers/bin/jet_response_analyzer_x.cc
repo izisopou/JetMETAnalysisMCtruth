@@ -194,6 +194,7 @@ int main(int argc,char**argv)
   TString        MCPUHistoName     = cl.getValue<TString>("MCPUHistoName",        "pileup");
   TString        DataPUReWeighting = cl.getValue<TString>("DataPUReWeighting",          "");
   TString        DataPUHistoName   = cl.getValue<TString>("DataPUHistoName","pileup_jt400");
+  TString        JetVetoMapName    = cl.getValue<TString>("JetVetoMapName",             "");
   bool           doDZcut           = cl.getValue<bool>   ("doDZcut",                 false);
   bool           doNMcut           = cl.getValue<bool>   ("doNMcut",                 false);
   bool           doVetoMap         = cl.getValue<bool>   ("doVetoMap",               false);
@@ -1440,13 +1441,25 @@ int main(int argc,char**argv)
     }
     
 
-   //TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Winter22Run3_RunCD_v2.root","READ");
-   //TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Winter22Run3_RunEFG_v1.root","READ");
-   //TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Summer23Prompt23_RunC_v1.root","READ");
-   TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Summer23BpixPrompt23_RunD_v1.root","READ");
-
-    TH2D *h_veto = (TH2D*)f_veto->Get("jetvetomap_all");
-
+    
+    TFile *f_veto; 
+    TH2D *h_veto = nullptr;
+    
+    if(doVetoMap){
+        f_veto = new TFile(JetVetoMapName,"READ");
+        
+        if (!f_veto || f_veto->IsZombie()) {
+            std::cerr << "Error opening veto map file: " << JetVetoMapName << std::endl;
+            return 1;
+        }
+        
+        h_veto = (TH2D*)f_veto->Get("jetvetomap_all");
+        
+        if (!h_veto) {
+            std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapName << std::endl;
+            return 1;
+        }
+    }
 
     //
     // fill histograms

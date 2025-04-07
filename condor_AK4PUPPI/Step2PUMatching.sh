@@ -22,8 +22,8 @@ else
    hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
 fi
 
-#cp $WorkDir/Files/Summer23_V1/L1_output/My*.root .
-#cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.root .
 
 echo Current directory content
 ls
@@ -45,11 +45,12 @@ jet_match_x \
    -nrefmax 3 \
    -doNotSave false \
    -doDZcut false \
-   -doVetoMap true
+   -doVetoMap true \
+   -JetVetoMapName JetVetoMap_2023C.root
 
 mv output_ak4puppi.root ${Output}/Result_${ID}.root
 
-# We do not derive L1 corrections for PUPPI but if it is needed the after 
+# We do not derive L1 corrections for PUPPI but if it is needed then after 
 # creating an L1 txt file, you can apply it to examine the corrected offset
 # by replacing:
 #

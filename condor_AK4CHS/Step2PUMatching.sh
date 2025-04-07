@@ -22,8 +22,8 @@ else
    hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
 fi
 
-#cp $WorkDir/Files/Summer23_V1/L1_output/My*.root .
-cp $WorkDir/Files/Summer23_V1/L1_output/Summer23_V1_MC_L1FastJet_AK4PFchs.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.root .
 
 echo Current directory content
 ls
@@ -46,7 +46,8 @@ jet_match_x \
    -nrefmax 3 \
    -doNotSave false \
    -doDZcut false \
-   -doVetoMap true
+   -doVetoMap true \
+   -JetVetoMapName JetVetoMap_2023C.root
 
 mv output_ak4pfchs.root ${Output}/Result_${ID}.root
 

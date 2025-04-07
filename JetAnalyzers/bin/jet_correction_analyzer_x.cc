@@ -175,6 +175,7 @@ int main(int argc,char**argv)
    TString         DataPUReWeighting = cl.getValue<TString>      ("DataPUReWeighting",    "");
    bool            mpv               = cl.getValue<bool>         ("mpv",               false);
    TString         readRespVsPileup  = cl.getValue<TString>      ("readRespVsPileup",     "");
+   TString         JetVetoMapName    = cl.getValue<TString>      ("JetVetoMapName",       "");
    bool            doDZcut           = cl.getValue<bool>         ("doDZcut",           false);
    bool            doNMcut           = cl.getValue<bool>         ("doNMcut",           false);
    bool            doVetoMap         = cl.getValue<bool>         ("doVetoMap",         false);
@@ -347,6 +348,8 @@ int main(int argc,char**argv)
       TH1F *EtaDistribution(nullptr);
       TH1F *EtaUncorrPtgt30(nullptr);
       TH1F *EtaCorrPtgt30(nullptr);
+      TH1F *mu_weighted(nullptr);
+      TH1F *rho_weighted(nullptr);
       TH1F *iEtaDistribution(nullptr);
       TH1F *EtaDistributionPU0(nullptr);
       TH1F *EtaDistributionPU[10];
@@ -439,6 +442,11 @@ int main(int argc,char**argv)
       EtaUncorrPtgt30->Sumw2();
       EtaCorrPtgt30 = new TH1F("EtaCorrPtgt30","EtaCorrPtgt30",200,-5,5);
       EtaCorrPtgt30->Sumw2();
+      
+      mu_weighted = new TH1F("mu_weighted","mu_weighted",120,0,120);
+      mu_weighted->Sumw2();
+      rho_weighted = new TH1F("rho_weighted","rho_weighted",120,0,120);
+      rho_weighted->Sumw2();
 
 
       if(!reduceHistograms) {
@@ -578,13 +586,24 @@ int main(int argc,char**argv)
       }
 
 
-      //TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Winter22Run3_RunCD_v2.root","READ");
-      TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Winter22Run3_RunEFG_v1.root","READ");
-      //TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Summer23Prompt23_RunC_v1.root","READ");
-      //TFile *f_veto = new TFile("/afs/cern.ch/work/i/izisopou/public/JEC_NewMethods/CMSSW_13_0_3/src/JetMETAnalysisMCtruth/MyDataMCHistos/veto_maps/VetoMaps_Summer23BpixPrompt23_RunD_v1.root","READ");
-
-      TH2D *h_veto = (TH2D*)f_veto->Get("jetvetomap_all");
-
+      TFile *f_veto;
+      TH2D *h_veto = nullptr;
+      
+      if(doVetoMap){
+          f_veto = new TFile(JetVetoMapName,"READ");
+        
+          if (!f_veto || f_veto->IsZombie()) {
+              std::cerr << "Error opening veto map file: " << JetVetoMapName << std::endl;
+              return 1;
+          }
+        
+          h_veto = (TH2D*)f_veto->Get("jetvetomap_all");
+        
+          if (!h_veto) {
+              std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapName << std::endl;
+              return 1;
+          }
+      }
 
       //
       // fill histograms
@@ -637,7 +656,8 @@ int main(int argc,char**argv)
 	 	if(JRAEvt->recopvz->size()==0) continue;
 		if(fabs(JRAEvt->recopvz->at(0) - JRAEvt->genpvz)>=0.2) continue;	
 	 }
-
+	 
+	 int count = 0;
 
          if(nrefmax>0 && JRAEvt->nref>nrefmax) JRAEvt->nref = nrefmax;
          for (unsigned char iref=0;iref<JRAEvt->nref;iref++) {
@@ -770,6 +790,10 @@ int main(int argc,char**argv)
 
 	    if(JRAEvt->jtpt->at(iref)>=30) EtaUncorrPtgt30->Fill(eta,weight);
 	    if( (scale*JRAEvt->jtpt->at(iref))>=30 ) EtaCorrPtgt30->Fill(eta,weight);
+	    
+	    count++;	    
+	    if(count==1) mu_weighted->Fill(JRAEvt->tnpus->at(12),weight);
+	    if(count==1) rho_weighted->Fill(JRAEvt->rho,weight);
 
             if(!reduceHistograms) {
                if(HigherDist->FindBin(scale*pt) < HigherDist->FindBin(ptgen)) HigherDist->Fill(scale*pt,weight);

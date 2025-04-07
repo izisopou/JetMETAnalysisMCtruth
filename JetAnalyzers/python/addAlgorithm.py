@@ -19,7 +19,7 @@ from JetMETAnalysisMCtruth.JetAnalyzers.TauReconstruction_cff import *
 from JetMETAnalysisMCtruth.JetAnalyzers.JPTReconstruction_cff import *
 from JetMETAnalysisMCtruth.JetAnalyzers.JetCorrection_cff     import *
 from RecoTauTag.RecoTau.tauDecayModes_cfi          import *
-from JetMETAnalysisMCtruth.JetAnalyzers.customizePuppiTune_cff_V15 import * #customized config (recipe) to apply on top of the main config so as to use the V15 tune
+#from JetMETAnalysisMCtruth.JetAnalyzers.customizePuppiTune_cff_V15 import * #customized config (recipe) to apply on top of the main config so as to use the V15 tune
 
 genParticlesForJetsNoNu.src = cms.InputTag("packedGenParticles")
 

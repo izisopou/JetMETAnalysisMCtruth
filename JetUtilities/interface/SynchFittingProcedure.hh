@@ -464,7 +464,7 @@ TH1 * getMeanHistoFromHisto(TString cname, TString title, TH2 *off_in, double & 
 		double errpT = fabs(histo->GetXaxis()->GetBinCenter(nb) - histo->GetXaxis()->GetBinLowEdge(nb));
 		valerr=fabs(val)*TMath::Sqrt( (aux->GetMeanError()/aux->GetMean())*(aux->GetMeanError()/aux->GetMean()) +  (errpT/histo->GetXaxis()->GetBinCenter(nb))* (errpT/histo->GetXaxis()->GetBinCenter(nb)) );
 
-		//To get mpv of offset
+		//To get most probable value of offset
 		/*TF1 *g1;
 		g1=FindBestGaussianCoreFit(aux);
 		val=g1->GetParameter(1);

@@ -10,7 +10,7 @@ ID=$4
 source $WorkDir/Setup_CMSSW.sh
 
 cp $WorkDir/Files/Summer23_V1/L2L3_output/*.txt .
-cp $WorkDir/Files/Summer23_V1/L2L3_output/My*.root .
+cp $WorkDir/Files/Summer23_V1/L2L3_output/*.root .
 
 echo Input files are: $File
 
@@ -24,7 +24,7 @@ hadd -k -f Input.root `echo $File | tr ':' ' '`
 #
 # -levels 2
 #
-# if you don't want to apply any txt file then remove the line entirely.
+# if you don't want to apply any txt file (raw response) then remove the line entirely.
 
 jet_correction_analyzer_x \
    -inputFilename Input.root \
@@ -44,7 +44,8 @@ jet_correction_analyzer_x \
    -nrefmax 3 \
    -doDZcut true \
    -doNMcut true \
-   -doVetoMap true
+   -doVetoMap true \
+   -JetVetoMapName JetVetoMap_2023C.root
 
 cp Closure_ak4puppi.root ${Output}/Closure_ak4puppi${ID}.root
 

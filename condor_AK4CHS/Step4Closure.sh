@@ -10,7 +10,7 @@ ID=$4
 source $WorkDir/Setup_CMSSW.sh
 
 cp $WorkDir/Files/Summer23_V1/L1L2L3_output/*.txt .
-cp $WorkDir/Files/Summer23_V1/L1L2L3_output/My*.root .
+cp $WorkDir/Files/Summer23_V1/L1L2L3_output/*.root .
 
 echo Input files are: $File
 
@@ -34,7 +34,8 @@ jet_correction_analyzer_x \
    -nrefmax 3 \
    -doDZcut true \
    -doNMcut false \
-   -doVetoMap false
+   -doVetoMap false \
+   -JetVetoMapName JetVetoMap_2023C.root
 
 cp Closure_ak4pfchs.root ${Output}/Closure_ak4pfchs${ID}.root
 
