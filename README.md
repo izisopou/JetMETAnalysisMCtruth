@@ -4,7 +4,9 @@
 
 - [Overview](#overview)
 - [Documentation](#documentation)
-- [Changes from CMSSW_12_6_X to CMSSW_13_0_X](#changes)
+- [Log book of changes](#logbook)
+        - [Changes from CMSSW_10_6_X to CMSSW_12_6_X](#changes_106Xto122X) 
+        - [Changes from CMSSW_12_6_X to CMSSW_13_0_X and beyond (up to at least CMSSW_14_2_X)](#changes_126Xto130X)
 - [Setup CMSSW release](#setup-cmssw)
 - [Instructions on how to run ntuples from MINIAOD](#ntuples-miniaod)
  	- [Important codes for producing ntuples](#important-codes)
@@ -25,31 +27,51 @@ The code contained in this package is used for creating and analyzing the L1Fast
 <a name="documentation"></a>
 ## Documentation
 
-1) CMS-AN-2021/148, "MC truth jet energy corrections using the Legacy 2016 simulations": \
+1) CMS-AN-2023/061, "MC truth jet energy corrections using the 2022, 2023 and 2024 Run-3 simulations": \
+https://cms.cern.ch/iCMS/user/noteinfo?cmsnoteid=CMS%20AN-2023/061
+
+3) CMS-AN-2021/148, "MC truth jet energy corrections using the Legacy 2016 simulations": \
 https://cms.cern.ch/iCMS/user/noteinfo?cmsnoteid=CMS%20AN-2021/148 
 
-2) CMS-AN-2020/151, "MC truth jet energy corrections using the Legacy 2017 and 2018 simulations": \
+4) CMS-AN-2020/151, "MC truth jet energy corrections using the Legacy 2017 and 2018 simulations": \
 https://cms.cern.ch/iCMS/user/noteinfo?cmsnoteid=CMS%20AN-2020/151
 
-3) CMS-AN-2020/049, "2018 Relative and Absolute MC Truth Jet Energy Corrections": \
+5) CMS-AN-2020/049, "2018 Relative and Absolute MC Truth Jet Energy Corrections": \
 https://cms.cern.ch/iCMS/user/noteinfo?cmsnoteid=CMS%20AN-2020/049
 
-4) CMS-AN-2019/230, "2016 Relative and Absolute MC Truth Jet Energy Corrections": \
+6) CMS-AN-2019/230, "2016 Relative and Absolute MC Truth Jet Energy Corrections": \
 https://cms.cern.ch/iCMS/user/noteinfo?cmsnoteid=CMS%20AN-2019/230
 
 
-<a name="changes"></a>
-## Changes from CMSSW_12_6_X to CMSSW_13_0_X
+<a name="logbook"></a>
+## Log book of changes
 
-1) Change to `edm::one::EDAnalyzer<>` and `edm::one::EDProducer<>` from edm::EDAnalyzer and edm::EDProducer respectively. Modify the includes as well.
+In some cases, when moving to a newer CMSSW version, compilation errors when doing `scram b -j 8` arise. In this section the necessary changes to the framework when migrating from a CMSSW version to a newer one will be presented, for book keeping purposes.
 
-2) Copy the file /cvmfs/cms.cern.ch/slc7_amd64_gcc11/external/gcc/11.2.1-f9b9dfdd886f71cd63f5538223d8f161/include/c++/11.2.1/bits/stl_tree.h to the JetMETAnalysisMCtruth/JetUtilities/interface directory and comment out lines 768-771
+<a name="changes_106Xto122X"></a>
+## Changes from CMSSW_10_6_X to CMSSW_12_6_X
 
-3) In JetUtilities/src/JetInfo.cc line 361 change assert(words>0) to assert(words != nullptr)
+1) Open the `JetMETAnalysis/JetAnalyzers/BuildFile.xml` code and in line 20 replace `SimDataFormats/JetMatching` with `DataFormats/JetMatching`
+2) Open the codes `JetMETAnalysis/JetAnalyzers/interface/JetResponseAnalyzer.hh` and `JetMETAnalysis/JetAnalyzers/interface/JetResponseAnalyzerProducer.hh` and replace `SimDataFormats/JetMatching` with `DataFormats/JetMatching` in lines 45 and 43 respectively.
+3) `cp /cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gcc/9.3.0/include/c++/9.3.0/bits/stl_tree.h JetMETAnalysis/JetUtilities/interface/`
+4) Open the `JetMETAnalysis/JetUtilities/interface/stl_tree.h` code and comment out lines 778-781 which are responsible for giving the error `static assertion failed: comparison object must be invocable as const`
+5) Open the `JetMETAnalysis/JetAnalyzers/bin/jet_match_x.cc` and `JetMETAnalysis/JetAnalyzers/bin/jet_synchtest_x.cc` codes and add *before any other include* the following: `#include "JetMETAnalysis/JetUtilities/interface/stl_tree.h"`
+6) Then, open the `../tmp/slc7_amd64_gcc900/src/JetMETAnalysis/JetUtilities/src/JetMETAnalysisJetUtilities/a/JetMETAnalysisJetUtilities_xr.cc` code and do the same -> add *before any other include* the following: `#include "JetMETAnalysis/JetUtilities/interface/stl_tree.h"`
+7) Move the `SynchFittingProcedure.hh` code from `JetMETAnalysis/JetUtilities/src/` to the `JetMETAnalysis/JetUtilities/interface/` folder and then open the `JetMETAnalysis/JetAnalyzers/bin/jet_synchplot_x.cc` code and in line 35 replace `src/` with `inteface/` (to provide the new correct path).
+8) Modify python files to work with python3: 4 spaces instead of a tab, `algsizetype.items()` instead of `algsizetype.iteritems()`, add parentheses in print commands, `list(genJetsDict.keys()).index(alg_size_type)` instead of `genJetsDict.keys().index(alg_size_type)` 
 
-4) From CMSSW_12_6_X copy the codes JetMETCorrections/Objects/interface/JetCorrector.h and  cmssw/JetMETCorrections/Objects/src/JetCorrector.cc and paste them to JetUtilities/interface/ and JetUtilities/src/ respectively. In JetCorrector.cc comment out lines 48-53, and in JetAnalyzers/src/JetResponseAnalyzer.cc, JetAnalyzers/src/JetResponseAnalyzerProducer.cc write jetCorrector_ =  0
+<a name="changes_126Xto130X"></a>
+## Changes from CMSSW_12_6_X to CMSSW_13_0_X and beyond (up to at least CMSSW_14_2_X)
 
-5) From CMSSW_12_6_X copy the codes JetMETCorrections/Configuration/python/JetCorrectionServicesAllAlgos_cff.py and JetMETCorrections/Configuration/python/JetCorrectionServices_cff.py and paste them inside JetAnalyzers/python/
+1) Change to `edm::one::EDAnalyzer<>` and `edm::one::EDProducer<>` from `edm::EDAnalyzer` and `edm::EDProducer` respectively. Modify the includes as well.
+
+2) Copy the file `/cvmfs/cms.cern.ch/slc7_amd64_gcc11/external/gcc/11.2.1-f9b9dfdd886f71cd63f5538223d8f161/include/c++/11.2.1/bits/stl_tree.h` to the `JetMETAnalysisMCtruth/JetUtilities/interface` directory and comment out lines 768-771
+
+3) In `JetUtilities/src/JetInfo.cc` line 361 change `assert(words>0)` to `assert(words != nullptr)`
+
+4) From CMSSW_12_6_X copy the codes `JetMETCorrections/Objects/interface/JetCorrector.h` and `cmssw/JetMETCorrections/Objects/src/JetCorrector.cc` and paste them to `JetUtilities/interface/` and `JetUtilities/src/` respectively. In `JetCorrector.cc` comment out lines 48-53, and in `JetAnalyzers/src/JetResponseAnalyzer.cc`, `JetAnalyzers/src/JetResponseAnalyzerProducer.cc` write `jetCorrector_ =  0`
+
+5) From CMSSW_12_6_X copy the codes `JetMETCorrections/Configuration/python/JetCorrectionServicesAllAlgos_cff.py` and `JetMETCorrections/Configuration/python/JetCorrectionServices_cff.py` and paste them inside `JetAnalyzers/python/`
 
 
 <a name="setup-cmssw"></a>
