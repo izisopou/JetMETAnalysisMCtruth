@@ -523,37 +523,24 @@ void L2Creator::loopOverEtaBins() {
         			fabscor->SetParameter(8,1.8277);
 				fabscor->SetParLimits(8,-50,50);
 			}
-
-
-			if(ieta==6 || ieta==8 || ieta==12 || ieta==28 || ieta==29 || ieta==30 || ieta==31 || ieta==34 || ieta==42 || ieta==51 || ieta==53 || ieta==56 || ieta==75)
-			{
-				fabscor->SetParameter(0,0.0221278);	
-        			fabscor->SetParLimits(0,-2,50);
-        			fabscor->SetParameter(1,300.);
-        			fabscor->SetParLimits(1,-100,2000);
-        			fabscor->SetParameter(2,-10);
-        			fabscor->SetParLimits(2,-200,500);
-        			fabscor->SetParameter(3,-5.);
-        			fabscor->SetParLimits(3,-50,15);
-        			fabscor->SetParameter(4,10.);
-        			fabscor->SetParLimits(4,-20,50);
-        			fabscor->SetParameter(5,-2.);
-        			fabscor->SetParLimits(5,-50,20);
-        			fabscor->SetParameter(6,-0.0679365);
-        			fabscor->SetParLimits(6,-20,50);
-        			fabscor->SetParameter(7,3.82597);
-        			fabscor->SetParLimits(7,-20,100);
-        			fabscor->SetParameter(8,1.8277);
-				fabscor->SetParLimits(8,-50,50);
-			}
+			
 */
-
-		/*	if(alg.find("puppi")!=string::npos){
-			    if(ieta==0 || ieta==7 || ieta==12 || ieta==69 || ieta==70 || ieta==72 || ieta==73 || ieta==74 || ieta==75 || ieta==76){ //for PUPPI 
+		
+		        if(ieta<=2 || ieta>=79){ 
 				fabscor->FixParameter(3,0.);
+			        fabscor->FixParameter(4,0.);
+			        fabscor->FixParameter(5,0.);
 				fabscor->FixParameter(6,0.);
-			   }
-			}*/
+			        fabscor->FixParameter(7,0.);
+			        fabscor->FixParameter(8,0.);
+		        }
+			
+			if(ieta==3 || ieta==4 || ieta==77 || ieta==78){ 
+				fabscor->FixParameter(6,0.);
+			        fabscor->FixParameter(7,0.);
+			        fabscor->FixParameter(8,0.);
+		        }    
+			
 
                         if(l2pffit.Contains("spline",TString::kIgnoreCase)) {
                             vabscor_eta_spline.back()->setPartialFunction(fabscor);
