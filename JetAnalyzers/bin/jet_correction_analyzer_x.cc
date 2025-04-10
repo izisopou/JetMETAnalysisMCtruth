@@ -175,7 +175,8 @@ int main(int argc,char**argv)
    TString         DataPUReWeighting = cl.getValue<TString>      ("DataPUReWeighting",    "");
    bool            mpv               = cl.getValue<bool>         ("mpv",               false);
    TString         readRespVsPileup  = cl.getValue<TString>      ("readRespVsPileup",     "");
-   TString         JetVetoMapName    = cl.getValue<TString>      ("JetVetoMapName",       "");
+   TString         JetVetoMapRootName= cl.getValue<TString>      ("JetVetoMapRootName",   "");
+   TString         JetVetoMapHistName= cl.getValue<TString>      ("JetVetoMapHistName",   "");
    bool            doDZcut           = cl.getValue<bool>         ("doDZcut",           false);
    bool            doNMcut           = cl.getValue<bool>         ("doNMcut",           false);
    bool            doVetoMap         = cl.getValue<bool>         ("doVetoMap",         false);
@@ -590,17 +591,17 @@ int main(int argc,char**argv)
       TH2D *h_veto = nullptr;
       
       if(doVetoMap){
-          f_veto = new TFile(JetVetoMapName,"READ");
+          f_veto = new TFile(JetVetoMapRootName,"READ");
         
           if (!f_veto || f_veto->IsZombie()) {
-              std::cerr << "Error opening veto map file: " << JetVetoMapName << std::endl;
+              std::cerr << "Error opening veto map file: " << JetVetoMapRootName << std::endl;
               return 1;
           }
         
-          h_veto = (TH2D*)f_veto->Get("jetvetomap_all");
+          h_veto = (TH2D*)f_veto->Get(JetVetoMapHistName);
         
           if (!h_veto) {
-              std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapName << std::endl;
+              std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapHistName << std::endl;
               return 1;
           }
       }

@@ -45,7 +45,8 @@ jet_correction_analyzer_x \
    -doDZcut true \
    -doNMcut true \
    -doVetoMap true \
-   -JetVetoMapName JetVetoMap_2023C.root
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 cp Closure_ak4puppi.root ${Output}/Closure_ak4puppi${ID}.root
 

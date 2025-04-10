@@ -47,7 +47,8 @@ jet_match_x \
    -doNotSave false \
    -doDZcut false \
    -doVetoMap true \
-   -JetVetoMapName JetVetoMap_2023C.root
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 mv output_ak4pfchs.root ${Output}/Result_${ID}.root
 

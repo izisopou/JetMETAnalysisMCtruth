@@ -61,7 +61,8 @@ jet_response_analyzer_x jra.config \
    -doDZcut true \
    -doNMcut true \
    -doVetoMap true \
-   -JetVetoMapName JetVetoMap_2023C.root
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 cp jra.root ${Output}/JRA_jecl1${ID}.root
 

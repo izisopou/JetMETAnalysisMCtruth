@@ -72,7 +72,7 @@ public:
    void   SetNpvRhoNpuValues(int NBins, int Width) {NBinsNpvRhoNpu=NBins; npvRhoNpuBinWidth=Width;}
    void   SetVptBins(vector<int> vptb) {vptBins = vptb;}
    void   DeclareHistograms(bool reduceHistograms);
-   void   LoopOverEvents(bool doDZcut, bool doVetoMap, string JetVetoMapName, bool verbose, bool reduceHistograms, string readJetMap, string outputPath);
+   void   LoopOverEvents(bool doDZcut, bool doVetoMap, string JetVetoMapRootName, string JetVetoMapHistName, bool verbose, bool reduceHistograms, string readJetMap, string outputPath);
    void   FillJetMap();
    void   FillRecToRecThroughGenMap();
    bool   GetJetMap(string readJetMap);
@@ -907,7 +907,7 @@ void MatchEventsAndJets::DeclareHistograms(bool reduceHistograms) {
 }
 
 //______________________________________________________________________________
-void MatchEventsAndJets::LoopOverEvents(bool doDZcut, bool doVetoMap, string JetVetoMapName, bool verbose, bool reduceHistograms, string readJetMap, string outputPath) {
+void MatchEventsAndJets::LoopOverEvents(bool doDZcut, bool doVetoMap, string JetVetoMapRootName, string JetVetoMapHistName, bool verbose, bool reduceHistograms, string readJetMap, string outputPath) {
    //First just figure out if the jetMapTree exists, assuming readJetMap is set.
    //It might be that the program failed after the event mapping, so the event maps exist, but not the jet maps
    //In this case the event maps should be read, but the jet maps should be recreated.
@@ -927,17 +927,17 @@ void MatchEventsAndJets::LoopOverEvents(bool doDZcut, bool doVetoMap, string Jet
    TH2D *h_veto = nullptr;
       
    if(doVetoMap){
-       f_veto = new TFile(JetVetoMapName.c_str(),"READ");
+       f_veto = new TFile(JetVetoMapRootName.c_str(),"READ");
         
        if (!f_veto || f_veto->IsZombie()) {
-           std::cerr << "Error opening veto map file: " << JetVetoMapName << std::endl;
+           std::cerr << "Error opening veto map file: " << JetVetoMapRootName << std::endl;
            return;
        }
         
-       h_veto = (TH2D*)f_veto->Get("jetvetomap_all");
+       h_veto = (TH2D*)f_veto->Get(JetVetoMapHistName.c_str());
         
        if (!h_veto) {
-           std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapName << std::endl;
+           std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapHistName << std::endl;
            return;
        }
    }
@@ -1695,7 +1695,8 @@ int main(int argc,char**argv)
    int          NBinsNpvRhoNpu    = cl.getValue<int>     ("NBinsNpvRhoNpu",                            6);
    vector<int>  vptBins           = cl.getVector<int>    ("vptBins",       "14:::18:::20:::24:::28:::30");
    bool         reduceHistograms  = cl.getValue<bool>    ("reduceHistograms",                       true);
-   string       JetVetoMapName    = cl.getValue<string> ("JetVetoMapName",                           "");
+   string       JetVetoMapRootName= cl.getValue<string>  ("JetVetoMapRootName",                       "");
+   string       JetVetoMapHistName= cl.getValue<string>  ("JetVetoMapHistName",                       "");
    bool         verbose           = cl.getValue<bool>    ("verbose",                               false);
    bool         doVetoMap         = cl.getValue<bool>    ("doVetoMap",                             false);
    bool         doDZcut           = cl.getValue<bool>    ("doDZcut",                               false);
@@ -1750,7 +1751,7 @@ int main(int argc,char**argv)
    mej->SetNpvRhoNpuValues(NBinsNpvRhoNpu,npvRhoNpuBinWidth);
    mej->SetVptBins(vptBins);
    mej->DeclareHistograms(reduceHistograms);
-   mej->LoopOverEvents(doDZcut,doVetoMap,JetVetoMapName,verbose,reduceHistograms,readEvtMaps,outputPath);
+   mej->LoopOverEvents(doDZcut,doVetoMap,JetVetoMapRootName,JetVetoMapHistName,verbose,reduceHistograms,readEvtMaps,outputPath);
    // mej->RemoveHistograms(verbose);
    mej->WriteOutput(outputPath, false && (readEvtMaps.empty()||!mej->JetMapTreeFound()));
 
