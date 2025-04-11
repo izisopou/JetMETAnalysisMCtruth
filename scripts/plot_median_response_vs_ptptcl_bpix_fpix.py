@@ -54,7 +54,7 @@ def median_weighted(n, a, w, boundaries, debug=False):
 
 
 def main():
-    usage = 'Example: python3 plot_median_response_vs_ptptcl_bpix_fpix.py --jetCone 4 --jetAlgo puppi --MC RunIII2024Summer24 --DoBPix 1 --DoFPix 1 --JECvsPhi 1' 
+    usage = 'Example: python3 plot_median_response_vs_ptptcl_bpix_fpix.py --jetCone 4 --jetAlgo puppi --MC RunIII2024Summer24 --version V2 --DoBPix 1 --DoFPix 1 --JECvsPhi 1' 
 
     parser = ArgumentParser(description='Script that plots the response correction factors vs eta',epilog=usage)
 
@@ -66,6 +66,9 @@ def main():
     
     parser.add_argument("-MC", "--MC", dest="mc", type=str, required=True,
                     help="Specify MC campaign", metavar="MC")
+                   
+    parser.add_argument("-v", "--version", dest="version", type=str, required=True,
+                    help="Specify JEC version", metavar="VERSION")                
                     
     parser.add_argument("-jecVsPhi", "--JECvsPhi", dest="jec_vs_phi", type=int, choices=[0, 1], required=True,
                     help="Specify if phi-dependent JECs are applied (0: No, 1: Yes)", metavar="JECVSPHI")                     
@@ -113,7 +116,7 @@ def main():
     frame.GetXaxis().SetTitleOffset(1.05)
     frame.GetXaxis().SetLabelSize(0.)
     frame.GetXaxis().SetNdivisions(15, 5, 0)
-    frame.GetYaxis().SetTitle('median(p_{T}^{rec} / p_{T}^{ptcl})')
+    frame.GetYaxis().SetTitle('median(R) = median(p_{T}^{rec} / p_{T}^{ptcl})')
     frame.GetYaxis().SetTitleSize(0.05)
     frame.GetYaxis().SetTitleOffset(1.15)
     frame.GetYaxis().SetLabelSize(0.035)
@@ -174,16 +177,15 @@ def main():
     legend.SetBorderSize(0)
     legend.AddEntry(0, 'AK'+str(args.jet_cone)+' '+args.jet_algo.upper(), '')
     legend.AddEntry(0, '#bf{#phi dependent correction}' if args.jec_vs_phi else '#bf{#phi inclusive correction}', '')
-     
-        
-    root_filename = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/' + args.mc + '/' + jec_type + '/Step4_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + issue_type + '/Merged.root'
-    
-    root_file = rt.TFile(root_filename, 'READ')
-    
-    print('Processing root file: ' + root_filename)
     
     
     if(args.doBPix):
+        root_filename_BPix = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/' + args.mc + '/' + args.version + '_' + jec_type + '/Step4_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_ApplyToBPixArea/Merged.root'
+    
+        root_file_BPix = rt.TFile(root_filename_BPix, 'READ')
+        
+        print('Processing root file: ' + root_filename_BPix)
+    
         etabin_low = 25
         etabin_high = 42
         
@@ -199,7 +201,7 @@ def main():
             ptmin = Boundaries[i]
             ptmax = Boundaries[i + 1]
             
-            hist2D = root_file.Get('ak' + str(args.jet_cone) + args.jet_algo.lower() + '/RelRspVsJetEta_RefPt' + str(int(ptmin)) + 'to' + str(int(ptmax)))                        
+            hist2D = root_file_BPix.Get('ak' + str(args.jet_cone) + args.jet_algo.lower() + '/RelRspVsJetEta_RefPt' + str(int(ptmin)) + 'to' + str(int(ptmax)))                        
             
             hist_proj = hist2D.ProjectionY('_proj_BPix_' + str(int(i)), etabin_low, etabin_high, 'e')
             hist_proj.SetDirectory(0) 
@@ -213,12 +215,18 @@ def main():
                 hist_BPix.SetBinContent(i+1, 0)
                 
         hist_BPix.GetXaxis().SetRangeUser(10, 5500)
-        hist_BPix.Draw('PE1 SAME')  
-        leg_entry = 'BPix area: -1.479 < #eta < 0.087 #wedge -1.22 < #phi < -0.79'      
+        hist_BPix.Draw('PE SAME')  
+        leg_entry = 'BPix area: #scale[0.7]{-1.479 < #eta < 0.087 #wedge -1.22 < #phi < -0.79}'      
         legend.AddEntry(hist_BPix, leg_entry, 'LPE')
     
     
     if(args.doFPix):
+        root_filename_FPix = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/' + args.mc + '/' + args.version + '_' + jec_type + '/Step4_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_ApplyToFPixArea/Merged.root'
+        
+        root_file_FPix = rt.TFile(root_filename_FPix, 'READ')
+        
+        print('Processing root file: ' + root_filename_FPix)
+    
         etabin_low = 19
         etabin_high = 22
         
@@ -234,7 +242,7 @@ def main():
             ptmin = Boundaries[i]
             ptmax = Boundaries[i + 1]
             
-            hist2D = root_file.Get('ak' + str(args.jet_cone) + args.jet_algo.lower() + '/RelRspVsJetEta_RefPt' + str(int(ptmin)) + 'to' + str(int(ptmax)))                        
+            hist2D = root_file_FPix.Get('ak' + str(args.jet_cone) + args.jet_algo.lower() + '/RelRspVsJetEta_RefPt' + str(int(ptmin)) + 'to' + str(int(ptmax)))                        
             
             hist_proj = hist2D.ProjectionY('_proj_FPix_' + str(int(i)), etabin_low, etabin_high, 'e')
             hist_proj.SetDirectory(0) 
@@ -248,8 +256,8 @@ def main():
                 hist_FPix.SetBinContent(i+1, 0)
     
         hist_FPix.GetXaxis().SetRangeUser(10, 5500)
-        hist_FPix.Draw('PE1 SAME') 
-        leg_entry = 'FPix area: -2.043 < #eta < -1.653 #wedge 2.53 < #phi < 2.71'
+        hist_FPix.Draw('PE SAME') 
+        leg_entry = 'FPix area: #scale[0.7]{#splitline{(-2.043 < #eta < -1.566 #wedge 2.44 < #phi < 2.79) #vee}{(-2.043 < #eta < -1.83 #wedge 2.79 < #phi < 3.05)}}'
         legend.AddEntry(hist_FPix, leg_entry, 'LPE')
     
                    
@@ -258,7 +266,7 @@ def main():
     legend.Draw()
         
 
-    output_png = '../ForAN/MedianResponseVsPt_' + args.mc + '_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + issue_type + '_' + jec_type + '.png'
+    output_png = '../OverviewPlotsBPixFPix/MedianResponseVsPt_' + args.mc + '_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + issue_type + '_' + args.version + '_' + jec_type + '.png'
     output_pdf = output_png.replace(".png", ".pdf")
 
     c1.SaveAs(output_png)
