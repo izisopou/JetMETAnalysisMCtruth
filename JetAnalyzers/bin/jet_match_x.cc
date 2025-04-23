@@ -1195,6 +1195,7 @@ bool MatchEventsAndJets::FillHistograms(bool doVetoMap, TH2D* h_veto, bool reduc
       for (map<Int_t, Int_t>::const_iterator j1it = jetMap.begin(); j1it != jetMap.end(); j1it++) {
          int j1 = j1it->first;
          JetCorrector->setJetEta(tpu->jteta->at(j1));
+         JetCorrector->setJetPhi(tpu->jtphi->at(j1));
          JetCorrector->setJetPt(tpu->jtpt->at(j1));
          JetCorrector->setJetA(tpu->jtarea->at(j1));
          JetCorrector->setRho(tpu->rho);

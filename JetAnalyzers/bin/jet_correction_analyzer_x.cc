@@ -705,6 +705,7 @@ int main(int argc,char**argv)
             if(JetCorrector) {
                JetCorrector->setJetPt(pt);
                JetCorrector->setJetEta(eta);
+               JetCorrector->setJetPhi(JRAEvt->jtphi->at(iref));
                if (TString(JetInfo::get_correction_levels(levels,L1FastJet)).Contains("L1FastJet")) {
                   if (JRAEvt->jtarea->at(iref)!=0)
                      JetCorrector->setJetA(JRAEvt->jtarea->at(iref));
@@ -748,6 +749,7 @@ int main(int argc,char**argv)
 	    //Cut after L1
 	    /*JetCorrector->setJetPt(pt);
 	    JetCorrector->setJetEta(eta);
+	    JetCorrector->setJetPhi(JRAEvt->jtphi->at(iref));
 	    JetCorrector->setJetA(JRAEvt->jtarea->at(iref));
 	    JetCorrector->setRho(JRAEvt->rho);
 	    vector<float> scaleL1andL2L3;

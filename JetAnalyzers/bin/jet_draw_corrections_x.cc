@@ -351,6 +351,7 @@ TCanvas * getCorrectionVsEtaCanvas(TString algo, FactorizedJetCorrector * jetCor
 	jetCorr->setJetEta(cc->GetBinCenter(b));
     jetCorr->setRho(fixedRho);
     //jetCorr->setRho(PtVals[c]);	//for fixed Pt
+    jetCorr->setJetPhi(2.6);
     jetCorr->setJetA(TMath::Pi()*TMath::Power(JetInfo(algo).coneSize/10.0,2));
 	double cor = jetCorr->getCorrection();
 	if (std::isnan((double)cor) || std::isinf((double)cor) ){
@@ -455,6 +456,7 @@ TCanvas * getCorrectionVsEtaCanvasTDR(TString algo, FactorizedJetCorrector * jet
         jetCorr->setJetPt(PtVals[c]);
         jetCorr->setJetEta(cc->GetBinCenter(b));
         jetCorr->setRho(fixedRho);
+        jetCorr->setJetPhi(2.6);
         jetCorr->setJetA(TMath::Pi()*TMath::Power(JetInfo(algo).coneSize/10.0,2));
         double cor = jetCorr->getCorrection();
         if (std::isnan((double)cor) || std::isinf((double)cor) ){
@@ -642,6 +644,7 @@ vector<TCanvas*> getCorrectionVsEtaComparisonCanvasTDR(vector<TString>& algs, ve
             allJetCorrs[normAlgIndex].first->setJetPt(PtVals[c]);
             allJetCorrs[normAlgIndex].first->setJetEta(cc[hstr]->GetBinCenter(b));
             allJetCorrs[normAlgIndex].first->setRho(fixedRho);
+            allJetCorrs[normAlgIndex].first->setJetPhi(2.6);
             allJetCorrs[normAlgIndex].first->setJetA(TMath::Pi()*TMath::Power(JetInfo(algs[ialg]).coneSize/10.0,2));
             cor = allJetCorrs[normAlgIndex].first->getCorrection();
          }
@@ -649,6 +652,7 @@ vector<TCanvas*> getCorrectionVsEtaComparisonCanvasTDR(vector<TString>& algs, ve
             allJetCorrs[ialg-1].first->setJetPt(PtVals[c]);
             allJetCorrs[ialg-1].first->setJetEta(cc[hstr]->GetBinCenter(b));
             allJetCorrs[ialg-1].first->setRho(fixedRho);
+            allJetCorrs[ialg-1].first->setJetPhi(2.6);
             allJetCorrs[ialg-1].first->setJetA(TMath::Pi()*TMath::Power(JetInfo(algs[ialg]).coneSize/10.0,2));
 
             cor = allJetCorrs[ialg-1].first->getCorrection();
@@ -657,6 +661,7 @@ vector<TCanvas*> getCorrectionVsEtaComparisonCanvasTDR(vector<TString>& algs, ve
             allJetCorrs[ialg].first->setJetPt(PtVals[c]);
             allJetCorrs[ialg].first->setJetEta(cc[hstr]->GetBinCenter(b));
             allJetCorrs[ialg].first->setRho(fixedRho);
+            allJetCorrs[ialg].first->setJetPhi(2.6);
             allJetCorrs[ialg].first->setJetA(TMath::Pi()*TMath::Power(JetInfo(algs[ialg]).coneSize/10.0,2));
             cor = allJetCorrs[ialg].first->getCorrection();
          }
@@ -960,6 +965,7 @@ EtaVals.push_back(5.191);
 	jetCorr->setJetEta(EtaVals[c]);
     jetCorr->setRho(fixedRho);
     //jetCorr->setRho(cc->GetBinCenter(b));	//for fixed Pt
+    jetCorr->setJetPhi(2.6);
     jetCorr->setJetA(TMath::Pi()*TMath::Power(JetInfo(algo).coneSize/10.0,2));
 	double cor = jetCorr->getCorrection();
 	if (std::isnan((double)cor) ||  std::isinf((double)cor) ){
@@ -1159,6 +1165,7 @@ EtaVals.push_back(-5.191);
          allJetCorrs[ialg].first->setJetEta(EtaVals[c]);
          allJetCorrs[ialg].first->setJetPt(cc->GetBinCenter(b));
          allJetCorrs[ialg].first->setRho(fixedRho);
+         allJetCorrs[ialg].first->setJetPhi(2.6);
          allJetCorrs[ialg].first->setJetA(TMath::Pi()*TMath::Power(JetInfo(algs[ialg]).coneSize/10.0,2));
          double cor = allJetCorrs[ialg].first->getCorrection();
          if (std::isnan((double)cor) || std::isinf((double)cor) ){
@@ -1255,6 +1262,7 @@ TCanvas * getCorrectionMap(TString algo, FactorizedJetCorrector * jetCorr,
          jetCorr->setJetPt(vpt[c]);
          jetCorr->setJetEta(eta);
          jetCorr->setRho(fixedRho);
+         jetCorr->setJetPhi(2.6);
          jetCorr->setJetA(TMath::Pi()*TMath::Power(JetInfo(algo).coneSize/10.0,2));
          double cor = jetCorr->getCorrection();
          if (std::isnan((double)cor) || std::isinf((double)cor) ){
@@ -1482,7 +1490,7 @@ FactorizedJetCorrector * getFactorizedCorrector(TString algo, CommandLine & cl, 
   bool    useL2Cor     = cl.getValue<bool>   ("useL2Cor"     , false   );
   bool    useL3Cor     = cl.getValue<bool>   ("useL3Cor"     , false   );
   bool    useL2L3ResCor= cl.getValue<bool>   ("useL2L3ResCor", false   );
-          fixedRho     = cl.getValue<double> ("fixedRho"     , 15.0    );
+          fixedRho     = cl.getValue<double> ("fixedRho"     , 28.43    );
 	  //fixedRho     = cl.getValue<double> ("fixedRho"     , 100.0    );	//for fixed Pt
 
   if (era.length()==0) {
@@ -1601,6 +1609,7 @@ Double_t fJECPt(Double_t *x, Double_t *p) {
 
   _jec->setJetPt(ptmeas);
   _jec->setJetEta(eta);
+  _jec->setJetPhi(2.6);
   _jec->setJetA(jeta);
   _jec->setRho(rho);
 
