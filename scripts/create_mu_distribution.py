@@ -49,7 +49,7 @@ def main():
             pileup.Fill(tnpus[12])
 
 
-    print('Writing output file: {fout_name}')
+    print('Writing output file: ' + fout_name)
 
     fout.cd()
     pileup.Write()
