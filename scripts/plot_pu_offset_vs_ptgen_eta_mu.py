@@ -183,7 +183,7 @@ def main():
             hist.SetStats(0)
             hist.SetMarkerColor(color)
             hist.SetMarkerSize(1.0)
-            hist.SetMarkerStyle(rt.kFullSquare)
+            hist.SetMarkerStyle(rt.kFullCircle)
             hist.SetLineColor(color)
             hist.GetXaxis().SetRangeUser(10, 5500)
             
