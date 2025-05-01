@@ -9,7 +9,7 @@ import glob
 
 
 def main():
-    usage = 'Example: python3 plot_pt_distributions.py'
+    usage = 'Example: python3 plot_ptgen_distributions.py'
         
     c = rt.TCanvas('c','',800,700)
     c.SetTickx(1)

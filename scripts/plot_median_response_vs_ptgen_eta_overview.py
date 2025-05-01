@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 
 
 def main():
-    usage = 'Example: python3 plot_overview_response_vs_pt_eta.py --jetCone 4 --jetAlgo puppi --era RunIII2024Summer24 --version V2_PhiIndependent --JEC 1 --ymin 0.92 --ymax 1.08' 
+    usage = 'Example: python3 plot_median_response_vs_ptgen_eta_overview.py --jetCone 4 --jetAlgo puppi --era RunIII2024Summer24 --version V2_PhiIndependent --JEC 1 --ymin 0.92 --ymax 1.08' 
 
     parser = ArgumentParser(description='Script that plots the overview jet response vs pt and eta for a specific MC dataset and jet collection',epilog=usage)
 

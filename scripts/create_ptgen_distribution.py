@@ -9,7 +9,7 @@ import glob
 
 
 def main():
-    usage = 'Example: python3 create_pt_distribution.py --era Run3Winter25'
+    usage = 'Example: python3 create_ptgen_distribution.py --era Run3Winter25'
 
     parser = ArgumentParser(description='Script extracting the gen pt distribution of an MC dataset',epilog=usage)
     
