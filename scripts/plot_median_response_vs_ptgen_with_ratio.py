@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 
 
 def main():
-    usage = 'Example: python3 plot_median_response_vs_ptptcl_with_ratio.py --jetCone 4 --jetAlgo puppi --MC1 Winter24 --MC2 Summer24 --JEC 0' 
+    usage = 'Example: python3 plot_median_response_vs_ptgen_with_ratio.py --jetCone 4 --jetAlgo puppi --MC1 Winter24 --MC2 Summer24 --JEC 0' 
 
     parser = ArgumentParser(description='Script that plots the median response vs ptptcl (gen pt) for two MC datasets and their ratio',epilog=usage)
 
@@ -37,10 +37,13 @@ def main():
     
         print('Processing abs eta bin [' + eta_min + ', ' + eta_max + ']')
         
-        response_type = 'L1L2L3Closure' if args.jec else 'RawResponse'
+        if args.jet_algo.lower() == 'puppi' :
+            response_type = 'L2L3Closure' if args.jec else 'RawResponse'
+        else:
+            response_type = 'L1L2L3Closure' if args.jec else 'ResponseWithL1'
         
-        root_filename_1 = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/MedianResponses/' + response_type + 'VsPt_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.mc_campaign_1 + '.root' 
-        root_filename_2 = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/MedianResponses/' + response_type + 'VsPt_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.mc_campaign_2 + '.root'
+        root_filename_1 = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/Responses/' + response_type + 'VsPt_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.mc_campaign_1 + '.root' 
+        root_filename_2 = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/Responses/' + response_type + 'VsPt_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.mc_campaign_2 + '.root'
         
         print('Processing file 1: ' + root_filename_1)
         print('Processing file 2: ' + root_filename_2)
@@ -230,7 +233,7 @@ def main():
         
         jec_type = 'After' if args.jec else 'Before'
 
-        output_png = '../ForAN/MedianResponseVsPt_' + jec_type + 'JECs_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.mc_campaign_1 + '_vs_' + args.mc_campaign_2 + '_AbsEta' + eta_min + 'to' + eta_max + '.png'
+        output_png = '../Comparisons/MedianResponseVsPt_' + jec_type + 'JECs_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.mc_campaign_1 + '_vs_' + args.mc_campaign_2 + '_AbsEta' + eta_min + 'to' + eta_max + '.png'
         output_pdf = output_png.replace(".png", ".pdf")
 
         c1.SaveAs(output_png)
