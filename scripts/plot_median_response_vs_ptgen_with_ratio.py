@@ -93,8 +93,8 @@ def main():
         top_frame.GetXaxis().SetTitleOffset(1.05)
         top_frame.GetXaxis().SetLabelSize(0)
         top_frame.GetXaxis().SetNdivisions(15, 5, 0)
-        top_frame.GetYaxis().SetTitle('median(p_{T}^{rec} / p_{T}^{ptcl})')
-        top_frame.GetYaxis().SetTitleSize(0.065)
+        top_frame.GetYaxis().SetTitle('median(R) = median(p_{T}^{rec} / p_{T}^{ptcl})')
+        top_frame.GetYaxis().SetTitleSize(0.07)
         top_frame.GetYaxis().SetTitleOffset(0.8)
         top_frame.GetYaxis().SetLabelSize(0.05)
         
