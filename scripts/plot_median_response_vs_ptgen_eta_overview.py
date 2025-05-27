@@ -35,15 +35,23 @@ def main():
     
     args = parser.parse_args()
     
-    type_corr = ('L1' if args.jet_algo.lower() == 'chs' else '')+'L2L3_Closure_VetoBPixAndFPixAreas' if args.jec else 'Response_NoCorrectionsApplied'
+    if not args.jec:
+        if args.jet_algo.lower() == 'chs':
+            type_corr = 'ResponseWithL1VsPt'
+        else:
+            type_corr = 'RawResponseVsPt'
+    else:
+        type_corr = ('L1' if args.jet_algo.lower() == 'chs' else '') + 'L2L3ClosureVsPt'            
     
-    root_file_name = '../condor_AK'+str(args.jet_cone)+args.jet_algo.upper()+'/Files/'+args.era+'_'+args.version+'/' + type_corr + '/ClosureVsRefPt.root'
+    version_suffix = '_' + args.version if args.version else ''
+    
+    root_file_name = '/eos/cms/store/group/phys_jetmet/ilias/JEC_NewMethods_Run3/Responses/' + type_corr + '_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.era + version_suffix + '.root'
     
     root_file = rt.TFile(root_file_name, 'READ')
     
     print('Root file used: ' + root_file_name)
     
-    jet_dir_name = 'ak' + str(args.jet_cone) + ('pf' if args.jet_algo.lower() == 'chs' else '') + args.jet_algo.lower() + ('l1' if args.jet_algo.lower() == 'chs' else '')
+    jet_dir_name = 'ak' + str(args.jet_cone) + ('pf' if args.jet_algo.lower() == 'chs' else '') + args.jet_algo.lower()
     
     c1 = rt.TCanvas("c1", "c1", 50, 50, 600, 600)
     c1.SetLogy(0)
@@ -160,7 +168,7 @@ def main():
     else:
         name = 'RawResponseVsPt' if args.jet_algo.lower() == 'puppi' else 'ResponseAfterL1VsPt'   
 
-    output_png = '../OverviewPlots/' + name +  '_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.era + '_' + args.version + '.png'  
+    output_png = '../Plots/Responses/' + name +  '_AK' + str(args.jet_cone) + args.jet_algo.upper() + '_' + args.era + version_suffix + '.png'
     output_pdf = output_png.replace('.png', '.pdf')
 
     c1.SaveAs(output_png)
