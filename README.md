@@ -1,5 +1,7 @@
 # JetMETAnalysisMCtruth
 
+**Author / Maintainer:** Ilias Zisopoulos, [GitHub Profile](https://github.com/izisopou), [ilias.zisopoulos@cern.ch](mailto:ilias.zisopoulos@cern.ch), [ilzisopoulos@gmail.com](mailto:ilzisopoulos@gmail.com)
+
 <!-- MarkdownTOC depth=0 -->
 
 - [Introduction](#introduction)
@@ -36,7 +38,9 @@
 <a name="introduction"></a>
 # Introduction
 
-The code contained in this package is used for creating and analyzing the `L1FastJet` and `L2Relative` MC truth jet energy corrections. The code is used by the Jet Energy Resolution and Corrections (JERC) subgroup. This is a dedicated workflow for the MC-truth jet energy corrections used by the Athens group. The original code is located at https://github.com/cms-jet/JetMETAnalysis .
+This package provides tools to derive, validate, and visualize `L1FastJet` and `L2Relative` MC-truth Jet Energy Corrections (JEC). 
+
+Originally based on [`cms-jet/JetMETAnalysis`](https://github.com/cms-jet/JetMETAnalysis), this package was overhauled and rewritten by Ilias Zisopoulos to extend compatibility across newer CMSSW release cycles, transition from legacy AOD to native MiniAOD processing, and incorporate dedicated validation workflows. It is now actively maintained and utilized within the CMS Jet Energy Resolution and Corrections (JERC) group under [`cms-analysis/jme/jerc-derivation/JetMETAnalysisMCtruth`](https://gitlab.cern.ch/cms-analysis/jme/jerc-derivation/JetMETAnalysisMCtruth).
 
 <a name="documentation"></a>
 # Documentation
