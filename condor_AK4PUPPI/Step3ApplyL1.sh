@@ -9,30 +9,34 @@ ID=$4
 
 source $WorkDir/Setup_CMSSW.sh
 
-cp $WorkDir/Files/L2L3_output/*.txt .
-cp $WorkDir/Files/L2L3_output/My*.root .
+cp $WorkDir/Files/Summer23_V1/L2L3_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L2L3_output/*.root .
 
 echo Input files are: $Files
 
 hadd -k -f Input.root `echo $Files | tr ':' ' '`
 
 # We do not have L1 corrections for PUPPI so the following lines are commented out
+# but if you have derived  them you need to un-comment them.
 
 #jet_apply_jec_x \
 #   -input Input.root \
 #   -output JRA_jecl1.root \
 #   -jecpath ./ \
-#   -era Winter22Run3 \
+#   -era Summer23_V1_MC \
 #   -levels 1 \
 #   -algs ak4puppi \
 #   -L1FastJet true \
 #   -saveitree false
 
 cp $CMSSW_BASE/src/JetMETAnalysisMCtruth/JetAnalyzers/config/jra_dr_finebinning.config jra.config
+#cp $CMSSW_BASE/src/JetMETAnalysisMCtruth/JetAnalyzers/config/jra_dr_coarsebinningeta.config jra.config
 
-#if you want to apply an L1 txt file and have the above lines un-commented out
-#-input JRA_jecl1.root
-#-algs ak4puppil1
+# if you want to apply an L1 txt file and have the above lines un-commented out
+# then you need to have the following lines below:
+#
+# -input JRA_jecl1.root
+# -algs ak4puppil1
 
 jet_response_analyzer_x jra.config \
    -input Input.root \
@@ -42,9 +46,9 @@ jet_response_analyzer_x jra.config \
    -nbinsrelrsp 60 \
    -doflavor false \
    -flavorDefinition phys \
-   -MCPUReWeighting MyMCPUHisto_Winter22Run3_Flat2018_PremixedPU.root \
+   -MCPUReWeighting MyMCPUHisto_Run3Summer23_PremixedPU.root \
    -MCPUHistoName pileup \
-   -DataPUReWeighting MyDataPUHisto_2022.root \
+   -DataPUReWeighting MyDataPUHisto_2023_erasC_100Bins.root \
    -DataPUHistoName pileup \
    -output jra.root \
    -useweight false \
@@ -55,10 +59,12 @@ jet_response_analyzer_x jra.config \
    -relrspmax 3.0 \
    -jtptmin 0 \
    -doDZcut true \
-   -doNMcut true
+   -doNMcut true \
+   -doVetoMap true \
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 cp jra.root ${Output}/JRA_jecl1${ID}.root
 
 rm *.root
-
 

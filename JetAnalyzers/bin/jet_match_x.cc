@@ -72,13 +72,13 @@ public:
    void   SetNpvRhoNpuValues(int NBins, int Width) {NBinsNpvRhoNpu=NBins; npvRhoNpuBinWidth=Width;}
    void   SetVptBins(vector<int> vptb) {vptBins = vptb;}
    void   DeclareHistograms(bool reduceHistograms);
-   void   LoopOverEvents(bool verbose, bool reduceHistograms, string readJetMap, string outputPath);
+   void   LoopOverEvents(bool doDZcut, bool doVetoMap, string JetVetoMapRootName, string JetVetoMapHistName, bool verbose, bool reduceHistograms, string readJetMap, string outputPath);
    void   FillJetMap();
    void   FillRecToRecThroughGenMap();
    bool   GetJetMap(string readJetMap);
    bool   JetMapTreeFound() {return jetMapTreeFound;}
    void   ReadJetMap(int ientry, string readJetMap);
-   bool   FillHistograms(bool reduceHistograms, IT::const_iterator it);
+   bool   FillHistograms(bool doVetoMap, TH2D* h_veto, bool reduceHistograms, IT::const_iterator it);
    void   RemoveHistograms(bool verbose);
    void   WriteOutput(string outputPath, bool writeJetMap);
 
@@ -907,7 +907,7 @@ void MatchEventsAndJets::DeclareHistograms(bool reduceHistograms) {
 }
 
 //______________________________________________________________________________
-void MatchEventsAndJets::LoopOverEvents(bool verbose, bool reduceHistograms, string readJetMap, string outputPath) {
+void MatchEventsAndJets::LoopOverEvents(bool doDZcut, bool doVetoMap, string JetVetoMapRootName, string JetVetoMapHistName, bool verbose, bool reduceHistograms, string readJetMap, string outputPath) {
    //First just figure out if the jetMapTree exists, assuming readJetMap is set.
    //It might be that the program failed after the event mapping, so the event maps exist, but not the jet maps
    //In this case the event maps should be read, but the jet maps should be recreated.
@@ -921,6 +921,26 @@ void MatchEventsAndJets::LoopOverEvents(bool verbose, bool reduceHistograms, str
    cout << endl << "Looping over the mapped events:" << endl << "\tprogress:" << endl;
    int jetMapIndex = -1;
    nevs = 0;
+
+
+   TFile *f_veto;
+   TH2D *h_veto = nullptr;
+      
+   if(doVetoMap){
+       f_veto = new TFile(JetVetoMapRootName.c_str(),"READ");
+        
+       if (!f_veto || f_veto->IsZombie()) {
+           std::cerr << "Error opening veto map file: " << JetVetoMapRootName << std::endl;
+           return;
+       }
+        
+       h_veto = (TH2D*)f_veto->Get(JetVetoMapHistName.c_str());
+        
+       if (!h_veto) {
+           std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapHistName << std::endl;
+           return;
+       }
+   }
 
 
    Long64_t nentries = (mapEventMatch.size() > maxEvts && iftest) ? maxEvts : mapEventMatch.size();
@@ -937,6 +957,11 @@ void MatchEventsAndJets::LoopOverEvents(bool verbose, bool reduceHistograms, str
         nevs++;
         continue;
       }
+
+      if(doDZcut){
+		if(fabs(tpu->recopvz->at(0) - tpu->genpvz)>=0.2) continue;	
+      }
+
       // Set the in-time pileup index after the first event only
       if(nevs==0) iIT = tpu->itIndex();
 
@@ -951,7 +976,7 @@ void MatchEventsAndJets::LoopOverEvents(bool verbose, bool reduceHistograms, str
          ReadJetMap(jetMapIndex,readJetMap);
       }
 
-      FillHistograms(reduceHistograms,it);
+      FillHistograms(doVetoMap,h_veto,reduceHistograms,it);
 
       nevs++;
 
@@ -1103,7 +1128,7 @@ void MatchEventsAndJets::ReadJetMap(int ientry, string readJetMap) {
 
 
 //______________________________________________________________________________
-bool MatchEventsAndJets::FillHistograms(bool reduceHistograms, IT::const_iterator it) {
+bool MatchEventsAndJets::FillHistograms(bool doVetoMap, TH2D* h_veto, bool reduceHistograms, IT::const_iterator it) {
    //=========================================================
    //              FILLING OF HISTOS START HERE
    //=========================================================
@@ -1170,6 +1195,7 @@ bool MatchEventsAndJets::FillHistograms(bool reduceHistograms, IT::const_iterato
       for (map<Int_t, Int_t>::const_iterator j1it = jetMap.begin(); j1it != jetMap.end(); j1it++) {
          int j1 = j1it->first;
          JetCorrector->setJetEta(tpu->jteta->at(j1));
+         JetCorrector->setJetPhi(tpu->jtphi->at(j1));
          JetCorrector->setJetPt(tpu->jtpt->at(j1));
          JetCorrector->setJetA(tpu->jtarea->at(j1));
          JetCorrector->setRho(tpu->rho);
@@ -1332,13 +1358,23 @@ bool MatchEventsAndJets::FillHistograms(bool reduceHistograms, IT::const_iterato
       if (!tpu->jtarea->at(jpu) || TMath::IsNaN(tpu->jtarea->at(jpu)) || fabs(tpu->jtarea->at(jpu))==TMath::Infinity() || ((minPhi || maxPhi) && (tpu->jtphi->at(jpu)<minPhi || tpu->jtphi->at(jpu)>maxPhi))) continue;
 
 
-//===Veto regions for UL2017 === --> HEP17 (1.31, -0.5236, 2.96, -0.8727) , HBPw89 (0, 2.705, 1.4835, 3.1416 )
-//if (!tpu->jtarea->at(jpu) || TMath::IsNaN(tpu->jtarea->at(jpu)) || fabs(tpu->jtarea->at(jpu))==TMath::Infinity() || ( (tpu->jtphi->at(jpu)<-0.5236 && tpu->jtphi->at(jpu)>-0.8727 && tpu->jteta->at(jpu)<2.96 && tpu->jteta->at(jpu)>1.31)|| ( tpu->jtphi->at(jpu)>2.705 && tpu->jtphi->at(jpu)<3.1416 && tpu->jteta->at(jpu)>0. && tpu->jteta->at(jpu)<1.4835) )) continue;
 
-//=== veto region for UL2018 =======
-//if (!tpu->jtarea->at(jpu) || TMath::IsNaN(tpu->jtarea->at(jpu)) || fabs(tpu->jtarea->at(jpu))==TMath::Infinity() || (tpu->jtphi->at(jpu)<-0.8727 && tpu->jtphi->at(jpu)>-1.5708 && tpu->jteta->at(jpu) < -1.31 && tpu->jteta->at(jpu)> -2.96) || (tpu->jtphi->at(jpu)>0.4363 && tpu->jtphi->at(jpu)<0.7854 && tpu->jteta->at(jpu) >0 && tpu->jteta->at(jpu)<1.31) ) continue;
 
-//cout << "JetPhi" << tpu->jtphi->at(jpu) << endl;
+      if(doVetoMap){
+		bool flag_IsInVetoRegion = false;
+
+		for(int ibin=1; ibin<=h_veto->GetNbinsX(); ibin++){
+			for(int jbin=1; jbin<=h_veto->GetNbinsY(); jbin++){
+				if(h_veto->GetBinContent(ibin, jbin)!=0){
+					if( ( (h_veto->GetXaxis()->GetBinLowEdge(ibin) < tpu->jteta->at(jpu)) && (tpu->jteta->at(jpu) < h_veto->GetXaxis()->GetBinLowEdge(ibin+1)) && (h_veto->GetYaxis()->GetBinLowEdge(jbin) < tpu->jtphi->at(jpu)) && (tpu->jtphi->at(jpu) < h_veto->GetYaxis()->GetBinLowEdge(jbin+1)) ) || ( (h_veto->GetXaxis()->GetBinLowEdge(ibin) < tnopu->jteta->at(jnopu)) && (tnopu->jteta->at(jnopu) < h_veto->GetXaxis()->GetBinLowEdge(ibin+1)) && (h_veto->GetYaxis()->GetBinLowEdge(jbin) < tnopu->jtphi->at(jnopu)) && (tnopu->jtphi->at(jnopu) < h_veto->GetYaxis()->GetBinLowEdge(jbin+1)) ) ) flag_IsInVetoRegion = true;
+				}
+			}
+		}
+
+		if(flag_IsInVetoRegion==true) continue;
+
+      }      
+
 
 
       idet = JetInfo::getDetIndex(tpu->jteta->at(jpu));
@@ -1660,7 +1696,11 @@ int main(int argc,char**argv)
    int          NBinsNpvRhoNpu    = cl.getValue<int>     ("NBinsNpvRhoNpu",                            6);
    vector<int>  vptBins           = cl.getVector<int>    ("vptBins",       "14:::18:::20:::24:::28:::30");
    bool         reduceHistograms  = cl.getValue<bool>    ("reduceHistograms",                       true);
+   string       JetVetoMapRootName= cl.getValue<string>  ("JetVetoMapRootName",                       "");
+   string       JetVetoMapHistName= cl.getValue<string>  ("JetVetoMapHistName",                       "");
    bool         verbose           = cl.getValue<bool>    ("verbose",                               false);
+   bool         doVetoMap         = cl.getValue<bool>    ("doVetoMap",                             false);
+   bool         doDZcut           = cl.getValue<bool>    ("doDZcut",                               false);
    bool         help              = cl.getValue<bool>    ("help",                                  false);
 
    if (help) {cl.print(); return 0;}
@@ -1712,7 +1752,7 @@ int main(int argc,char**argv)
    mej->SetNpvRhoNpuValues(NBinsNpvRhoNpu,npvRhoNpuBinWidth);
    mej->SetVptBins(vptBins);
    mej->DeclareHistograms(reduceHistograms);
-   mej->LoopOverEvents(verbose,reduceHistograms,readEvtMaps,outputPath);
+   mej->LoopOverEvents(doDZcut,doVetoMap,JetVetoMapRootName,JetVetoMapHistName,verbose,reduceHistograms,readEvtMaps,outputPath);
    // mej->RemoveHistograms(verbose);
    mej->WriteOutput(outputPath, false && (readEvtMaps.empty()||!mej->JetMapTreeFound()));
 

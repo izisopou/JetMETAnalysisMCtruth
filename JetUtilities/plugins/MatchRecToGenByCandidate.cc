@@ -8,7 +8,7 @@
 
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -61,8 +61,7 @@ struct MatchLtComp
 
 
 //______________________________________________________________________________
-class MatchRecToGenByCandidate : public edm::EDProducer
-{
+class MatchRecToGenByCandidate : public edm::one::EDProducer<> {
 public:
   // construction/destruction
   MatchRecToGenByCandidate(const edm::ParameterSet& iConfig);

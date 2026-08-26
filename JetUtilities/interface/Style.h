@@ -261,7 +261,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX, bool verbose )
     }
   else if ( iPeriod==14 )
     {
-      lumiText += "Winter22Run3 (13.6 TeV)"; //#bf{#it{UL 2018}} 
+      lumiText += "Summer22EE (13.6 TeV)"; 
     }
   else if ( iPeriod==15 )
     {

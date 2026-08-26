@@ -49,7 +49,7 @@ L2Creator::L2Creator(CommandLine& cl) {
 
     ptclip     = cl.getValue<float>   ("ptclip",            0.);
     statTh     = cl.getValue<int>     ("statTh",             4);
-    ptclipfit = cl.getValue<bool> ("ptclipfit", true);
+    ptclipfit = cl.getValue<bool> ("ptclipfit", false);
 
     if (!cl.partialCheck()) return;
     cl.print();
@@ -297,7 +297,7 @@ void L2Creator::loopOverEtaBins() {
                 abscor  =1.0/absrsp;
                 eabscor = abscor*abscor*epeak;
 
-		//Mikko's suggestion of minimum uncertainty of 0.1% (or 0.01%)
+		//Mikko's suggestion of minimum uncertainty of 0.1%
 		if(eabscor<0.001*abscor){
 			eabscor = 0.001*abscor;
 		}
@@ -333,9 +333,7 @@ void L2Creator::loopOverEtaBins() {
             //xmin = max(gabscor->GetX()[0],3.0);
                 // Sort the points. Doesn't matter which ref pt produced a given jet pt as long as they are sorted.
                 gabscor->Sort();
-
-		//Starting point of fits
-		if((ieta<=13 || ieta>=68)) 
+		if(ieta<=11 || ieta>=70)
 		{
 			start_of_fit = 14.0;
 		}
@@ -343,6 +341,7 @@ void L2Creator::loopOverEtaBins() {
 		{
 			start_of_fit = 8.0;
 		}
+
                 xmin = max(gabscor->GetX()[0],start_of_fit); //start of fit
                 xmax = gabscor->GetX()[gabscor->GetN()-1];
             }
@@ -413,7 +412,7 @@ void L2Creator::loopOverEtaBins() {
 
 			//Change initial parameters for specific eta bins so that all fits converge
 
-		/*	if(ieta==13 || ieta==31 || ieta==32 || ieta==33 || ieta==39 || ieta==41 || ieta==42 || ieta==50 || ieta==52 || ieta==57 || ieta==77 || ieta==8)
+		/*	if(ieta==9 || ieta==15 || ieta==16 || ieta==66 || ieta==79 || ieta==80 || ieta==8)
 			{
 				fabscor->SetParameter(0,-0.0221278);
         			fabscor->SetParLimits(0,-2,25);
@@ -435,7 +434,7 @@ void L2Creator::loopOverEtaBins() {
 				fabscor->SetParLimits(8,-50,50);
 			}
 
-			if(ieta==20 || ieta==28 || ieta==78)
+			if(ieta==0 || ieta==1 || ieta==35 || ieta==39 || ieta==43 || ieta==44 || ieta==81)
 			{
 				fabscor->SetParameter(0,-0.0221278);
         			fabscor->SetParLimits(0,-2,25);
@@ -458,7 +457,7 @@ void L2Creator::loopOverEtaBins() {
 			}
 
 
-			if(ieta==17 || ieta==79)
+			if(ieta==36 || ieta==47 || ieta==50 || ieta==62 || ieta==71 || ieta==72)
 			{
 				fabscor->SetParameter(0,-0.0221278);
         			fabscor->SetParLimits(0,-2,25);
@@ -480,31 +479,8 @@ void L2Creator::loopOverEtaBins() {
 				fabscor->SetParLimits(8,-50,50);
 			}
 
-			if(ieta==74)
-			{
-				fabscor->SetParameter(0,-0.0221278);
-        			fabscor->SetParLimits(0,-2,25);
-        			fabscor->SetParameter(1,0.2);
-        			fabscor->SetParLimits(1,-50,100);
-        			fabscor->SetParameter(2,100);
-        			fabscor->SetParLimits(2,-100,400);
-        			fabscor->SetParameter(3,-0.0679365);
-        			fabscor->SetParLimits(3,-200,200);
-        			fabscor->SetParameter(4,2.82597);
-       				fabscor->SetParLimits(4,-10,20);
-        			fabscor->SetParameter(5,1.8277);
-        			fabscor->SetParLimits(5,-20,50);
-        			fabscor->SetParameter(6,-5.);
-        			fabscor->SetParLimits(6,-25,10);
-        			fabscor->SetParameter(7,3.82597);
-        			fabscor->SetParLimits(7,-100,500);
-        			fabscor->SetParameter(8,1.8277);
-				fabscor->SetParLimits(8,-50,50);
-			}
 
-
-
-			if(ieta==35)
+			if(ieta==41)  
 			{
 				fabscor->SetParameter(0,0.0221278);	
         			fabscor->SetParLimits(0,-2,50);
@@ -526,7 +502,7 @@ void L2Creator::loopOverEtaBins() {
 				fabscor->SetParLimits(8,-50,50);
 			}
 
-			if(ieta==38 || ieta==47 || ieta==73 || ieta==70)
+			if(ieta==76)
 			{
 				fabscor->SetParameter(0,0.0221278);	
         			fabscor->SetParLimits(0,-2,50);
@@ -547,38 +523,25 @@ void L2Creator::loopOverEtaBins() {
         			fabscor->SetParameter(8,1.8277);
 				fabscor->SetParLimits(8,-50,50);
 			}
-
-
-			if(ieta==0 || ieta==1 || ieta==2 || ieta==9 || ieta==36 || ieta==44 || ieta==45 || ieta==77 || ieta==78 || ieta==80 || ieta==81)
-			{
-				fabscor->SetParameter(0,0.0221278);	
-        			fabscor->SetParLimits(0,-2,50);
-        			fabscor->SetParameter(1,300.);
-        			fabscor->SetParLimits(1,-100,2000);
-        			fabscor->SetParameter(2,-10);
-        			fabscor->SetParLimits(2,-200,500);
-        			fabscor->SetParameter(3,-5.);
-        			fabscor->SetParLimits(3,-50,15);
-        			fabscor->SetParameter(4,10.);
-        			fabscor->SetParLimits(4,-20,50);
-        			fabscor->SetParameter(5,-2.);
-        			fabscor->SetParLimits(5,-50,20);
-        			fabscor->SetParameter(6,-0.0679365);
-        			fabscor->SetParLimits(6,-20,50);
-        			fabscor->SetParameter(7,3.82597);
-        			fabscor->SetParLimits(7,-20,100);
-        			fabscor->SetParameter(8,1.8277);
-				fabscor->SetParLimits(8,-50,50);
-			}
+			
 */
-
-	/*		if(alg.find("puppi")!=string::npos){
-			    if(ieta<=3 || ieta>=79){ //for PUPPI 
+		
+		        if(ieta<=2 || ieta>=79){ 
 				fabscor->FixParameter(3,0.);
+			        fabscor->FixParameter(4,0.);
+			        fabscor->FixParameter(5,0.);
 				fabscor->FixParameter(6,0.);
-			   }
-			}
-*/
+			        fabscor->FixParameter(7,0.);
+			        fabscor->FixParameter(8,0.);
+		        }
+			
+			if(ieta==3 || ieta==4 || ieta==77 || ieta==78){ 
+				fabscor->FixParameter(6,0.);
+			        fabscor->FixParameter(7,0.);
+			        fabscor->FixParameter(8,0.);
+		        }    
+			
+
                         if(l2pffit.Contains("spline",TString::kIgnoreCase)) {
                             vabscor_eta_spline.back()->setPartialFunction(fabscor);
                         }
@@ -750,7 +713,7 @@ void L2Creator::loopOverEtaBins() {
                     int clipPar = nPar;
 
                     TString clip = TString::Format("((x<[%d])*([%d]))+((x>=[10])*("+(TString)fabscor->GetTitle()+"))", clipPar+1, clipPar);
-                    TF1 * fabscornew = new TF1(fabscor->GetName(), clip, 0.001, 6800);
+                    TF1 * fabscornew = new TF1(fabscor->GetName(), clip, 0.001, 6500);
                     for (int ip=0; ip<nPar; ip++) 
 		    {
                         fabscornew->SetParameter(ip, fabscor->GetParameter(ip));
@@ -1224,8 +1187,23 @@ void L2Creator::setOfflinePFParameters(TGraphErrors* gabscor, TF1* fabscor, doub
         fabscor->SetParLimits(4,0,100);
     }
     else if(l2pffit.EqualTo("standard+Gaussian",TString::kIgnoreCase)) {
-
-	fabscor->SetParameter(0,0.0221278);
+/*        fabscor->SetParameter(0,-0.0221278);
+        fabscor->SetParameter(1,119.265);
+        fabscor->SetParameter(2,100);
+        fabscor->SetParameter(3,-0.0679365);
+        fabscor->SetParameter(4,2.82597);
+        fabscor->SetParameter(5,1.8277);
+        fabscor->SetParameter(6,-0.0679365);
+        fabscor->SetParameter(7,3.82597);
+        fabscor->SetParameter(8,1.8277);
+        fabscor->SetParLimits(6,-20,10);
+        fabscor->SetParLimits(7,0,100);
+        fabscor->SetParLimits(3,-15,15);
+        fabscor->SetParLimits(4,0,500);
+        fabscor->SetParLimits(0,-2,25);
+        fabscor->SetParLimits(1,0,250);
+*/
+	fabscor->SetParameter(0,0.0221278);	//v2
         fabscor->SetParLimits(0,-2,50);
         fabscor->SetParameter(1,14.265);
         fabscor->SetParLimits(1,0,250);
@@ -1244,6 +1222,26 @@ void L2Creator::setOfflinePFParameters(TGraphErrors* gabscor, TF1* fabscor, doub
         fabscor->SetParameter(8,1.8277);
 	fabscor->SetParLimits(8,-50,50);
 
+
+/*	fabscor->SetParameter(0,-0.0221278);
+        fabscor->SetParLimits(0,-2,25);
+        fabscor->SetParameter(1,1.2);
+        fabscor->SetParLimits(1,0,250);
+        fabscor->SetParameter(2,100);
+        fabscor->SetParLimits(2,0,200);
+        fabscor->SetParameter(3,-0.0679365);
+       	fabscor->SetParLimits(3,-15,15);
+        fabscor->SetParameter(4,2.82597);
+       	fabscor->SetParLimits(4,0,500);
+        fabscor->SetParameter(5,1.8277);
+       	fabscor->SetParLimits(5,-20,50);
+        fabscor->SetParameter(6,-0.0679365);
+        fabscor->SetParLimits(6,-20,10);
+        fabscor->SetParameter(7,3.82597);
+        fabscor->SetParLimits(7,0,100);
+        fabscor->SetParameter(8,1.8277);
+	fabscor->SetParLimits(8,-50,50);
+*/
 
 /*	fabscor->SetRange(8.,3500.);
 	fabscor->SetParameter(0,1.09892);	//Modification of 0,1,2 with powerlaw first term + single-sided log-gaus by Mikko
@@ -1702,3 +1700,4 @@ void L2Creator::closeFiles() {
     delete ifile;
     cout<<"DONE"<<endl;
 }
+

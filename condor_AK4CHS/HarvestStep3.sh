@@ -7,9 +7,9 @@ hadd -k -f $Step3Output/Merged.root $Step3Output/JRA_*root
 jet_l2_correction_x \
    -input $Step3Output/Merged.root \
    -algs ak4pfchsl1 \
-   -era Winter22Run3 \
+   -era Summer23_V1_MC \
    -output l2.root \
-   -outputDir Files/L1L2L3_output/ \
+   -outputDir Files/Summer23_V1/L1L2L3_output/ \
    -makeCanvasVariable AbsCorVsJetPt:JetEta \
    -l2l3 true \
    -batch true \
@@ -20,5 +20,5 @@ jet_l2_correction_x \
    -l2pffit standard+Gaussian \
    -ptclipfit true \
 
-mv Files/L1L2L3_output/Winter22Run3_L2Relative_AK4PFchsl1.txt Files/L1L2L3_output/Winter22Run3_L2Relative_AK4PFchs.txt
+mv Files/Summer23_V1/L1L2L3_output/Summer23_V1_MC_L2Relative_AK4PFchsl1.txt Files/Summer23_V1/L1L2L3_output/Summer23_V1_MC_L2Relative_AK4PFchs.txt
 

@@ -9,13 +9,12 @@
 #ifndef JETRESPONSEANALYZERPRODUCER_HH
 #define JETRESPONSEANALYZERPRODUCER_HH
 
-
 #include "JetMETAnalysisMCtruth/JetUtilities/interface/GenJetLeptonFinder.h"
 #include "JetMETAnalysisMCtruth/JetUtilities/interface/JRAEvent.h"
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 //#include "FWCore/Framework/interface/EDAnalyzer.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -38,7 +37,8 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/Common/interface/RefVectorHolderBase.h"
 
-#include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "JetMETAnalysisMCtruth/JetUtilities/interface/JetCorrector.h"
+//#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 
 #include "DataFormats/JetMatching/interface/JetMatchedPartons.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -63,8 +63,7 @@ using namespace std;
 // class definition
 ////////////////////////////////////////////////////////////////////////////////
 
-class JetResponseAnalyzerProducer : public edm::EDProducer
-{
+class JetResponseAnalyzerProducer : public edm::one::EDProducer<> {
 public:
   // construction/destruction
   explicit JetResponseAnalyzerProducer(const edm::ParameterSet& iConfig);

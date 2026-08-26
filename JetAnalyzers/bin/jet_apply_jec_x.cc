@@ -232,6 +232,7 @@ int main(int argc,char**argv)
           corrector->setJetPt(JRAEvt->jtpt->at(ijt));
           corrector->setJetE(JRAEvt->jte->at(ijt));
           corrector->setJetEta(JRAEvt->jteta->at(ijt));
+          corrector->setJetPhi(JRAEvt->jtphi->at(ijt));
           if (TString(JetInfo::get_correction_levels(levels,L1FastJet)).Contains("L1FastJet")) {
              if (JRAEvt->jtarea->at(ijt)!=0)
                 corrector->setJetA(JRAEvt->jtarea->at(ijt));

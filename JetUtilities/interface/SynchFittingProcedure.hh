@@ -464,7 +464,7 @@ TH1 * getMeanHistoFromHisto(TString cname, TString title, TH2 *off_in, double & 
 		double errpT = fabs(histo->GetXaxis()->GetBinCenter(nb) - histo->GetXaxis()->GetBinLowEdge(nb));
 		valerr=fabs(val)*TMath::Sqrt( (aux->GetMeanError()/aux->GetMean())*(aux->GetMeanError()/aux->GetMean()) +  (errpT/histo->GetXaxis()->GetBinCenter(nb))* (errpT/histo->GetXaxis()->GetBinCenter(nb)) );
 
-		//To get mpv of offset
+		//To get most probable value of offset
 		/*TF1 *g1;
 		g1=FindBestGaussianCoreFit(aux);
 		val=g1->GetParameter(1);
@@ -491,7 +491,7 @@ TH1 * getMeanHistoFromHisto(TString cname, TString title, TH2 *off_in, double & 
    }
    //histo->GetYaxis()->SetRangeUser(0,maxy);
    histo->GetYaxis()->SetRangeUser(miny,maxy);
-   histo->GetXaxis()->SetRangeUser(15.,5500.);
+   histo->GetXaxis()->SetRangeUser(1.,6800.);
    // return
    return histo;
 
@@ -640,9 +640,11 @@ TCanvas * getCanvasResolution(TString cname, TString algo, TString title, vector
    if(cname.Contains("BB"))
       eta = "|#eta|<1.3";
    else if(cname.Contains("EI"))
-      eta = "1.3<|#eta|<2.5";
-   else if(cname.Contains("EO"))
-      eta = "2.5<|#eta|<3.0";
+      eta = "1.3<|#eta|<2.4";
+   else if(cname.Contains("1EO"))
+      eta = "2.4<|#eta|<2.7";
+   else if(cname.Contains("2EO"))
+      eta = "2.7<|#eta|<3.0";
    else if(cname.Contains("FF"))
       eta = "3.0<|#eta|<5.0";
    leg->AddEntry((TObject*)0,eta,"");
@@ -884,8 +886,8 @@ TCanvas * getGausMeanOffset(TString cname, TString ctitle, TString algo, vector<
    else
       NPV_Rho = 0;
 
-   //TH1D* hbin = new TH1D(Form("hbin_%s",cname.Data()),Form("hbin_%s",cname.Data()), 10000, 0.,10000.);
-   TH1D* hbin = new TH1D(Form("hbin_%s",cname.Data()),Form("hbin_%s",cname.Data()), 9985, 15.,10000.);
+   TH1D* hbin = new TH1D(Form("hbin_%s",cname.Data()),Form("hbin_%s",cname.Data()), 10000, 0.,10000.);
+   //TH1D* hbin = new TH1D(Form("hbin_%s",cname.Data()),Form("hbin_%s",cname.Data()), 9985, 15.,10000.);
    //hbin->GetXaxis()->SetLimits(6.0,4000.0);
    hbin->GetXaxis()->SetMoreLogLabels();
    hbin->GetXaxis()->SetNoExponent();
@@ -917,9 +919,11 @@ TCanvas * getGausMeanOffset(TString cname, TString ctitle, TString algo, vector<
    if(cname.Contains("BB"))
       eta = "|#eta|<1.3";
    else if(cname.Contains("EI"))
-      eta = "1.3<|#eta|<2.5";
-   else if(cname.Contains("EO"))
-      eta = "2.5<|#eta|<3.0";
+      eta = "1.3<|#eta|<2.4";
+   else if(cname.Contains("1EO"))
+      eta = "2.4<|#eta|<2.7";
+   else if(cname.Contains("2EO"))
+      eta = "2.7<|#eta|<3.0";
    else if(cname.Contains("FF"))
       eta = "3.0<|#eta|<5.0";
    leg->AddEntry((TObject*)0,eta,"");
@@ -1009,7 +1013,7 @@ TCanvas * getGausMeanOffset(TString cname, TString ctitle, TString algo, vector<
 */
    hbin->GetYaxis()->SetRangeUser(-1.,1.);
 //   hbin->GetYaxis()->SetRangeUser(-50.,80.);
-   hbin->GetXaxis()->SetLimits(15.,5500.);
+   hbin->GetXaxis()->SetLimits(1.,6800.);
    hbin->GetXaxis()->SetLabelSize(0.04);
    hbin->GetYaxis()->SetLabelSize(0.04);
    hbin->GetXaxis()->SetTitleSize(0.055);
@@ -1330,9 +1334,11 @@ TCanvas * getOffsetStack(TString cname, TString ctitle, TString algo, vector<TPr
    if(cname.Contains("BB"))
       eta = "|#eta|<1.3";
    else if(cname.Contains("EI"))
-      eta = "1.3<|#eta|<2.5";
-   else if(cname.Contains("EO"))
-      eta = "2.5<|#eta|<3.0";
+      eta = "1.3<|#eta|<2.4";
+   else if(cname.Contains("1EO"))
+      eta = "2.4<|#eta|<2.7";
+   else if(cname.Contains("2EO"))
+      eta = "2.7<|#eta|<3.0";
    else if(cname.Contains("FF"))
       eta = "3.0<|#eta|<5.0";
    leg->AddEntry((TObject*)0,eta,"");
@@ -1650,9 +1656,11 @@ TCanvas * getCanvasResolution_v2(TString cname, TString algo, TString title, vec
    if(cname.Contains("BB"))
       pave->AddText("|#eta|<1.3");
    else if(cname.Contains("EI"))
-      pave->AddText("1.3<|#eta|<2.5");
-   else if(cname.Contains("EO"))
-      pave->AddText("2.5<|#eta|<3.0");
+      pave->AddText("1.3<|#eta|<2.4");
+   else if(cname.Contains("1EO"))
+      pave->AddText("2.4<|#eta|<2.7");
+   else if(cname.Contains("2EO"))
+      pave->AddText("2.7<|#eta|<3.0");
    else if(cname.Contains("FF"))
       pave->AddText("3.0<|#eta|<5.0");
 

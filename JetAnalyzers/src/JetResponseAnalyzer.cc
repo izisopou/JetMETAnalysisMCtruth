@@ -182,7 +182,8 @@ void JetResponseAnalyzer::analyze(const edm::Event& iEvent,
   edm::Handle<vector<pat::PackedGenParticle> >        genParticles;
 
   // Jet CORRECTOR
-  jetCorrector_ = (jecLabel_.empty()) ? 0 : JetCorrector::getJetCorrector(jecLabel_,iSetup);
+  //jetCorrector_ = (jecLabel_.empty()) ? 0 : JetCorrector::getJetCorrector(jecLabel_,iSetup);
+  jetCorrector_ =  0 ;
 
   // GENERATOR INFORMATION
   JRAEvt_->pthat  = 0.0;

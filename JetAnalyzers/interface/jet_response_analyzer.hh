@@ -23,7 +23,8 @@
 #include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+//#include "FWCore/Framework/interface/global/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -65,12 +66,12 @@ using namespace std;
 // class definition
 ////////////////////////////////////////////////////////////////////////////////
 
-class jet_response_analyzer : public edm::EDAnalyzer
-{
+class jet_response_analyzer : public edm::one::EDAnalyzer<> {
 public:
   /// construction/destruction
   explicit jet_response_analyzer(const edm::ParameterSet& iConfig);
   virtual ~jet_response_analyzer();
+  //~jet_response_analyzer() override = default; 
 
   /// Book the histograms in a given TFileDirectory
   void bookHistograms(edm::Service<TFileService>& fs, string alg);

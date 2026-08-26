@@ -10,7 +10,7 @@ jet_draw_closure_x \
    -path $Step4Output/ \
    -filename Merged \
    -histMet median \
-   -outputDir Files/L1L2L3_Closure/ \
+   -outputDir Files/Summer23_V1/L1L2L3_Closure/ \
    -outputFormat .png .pdf \
    -draw_guidelines true \
    -doRatioPt false \

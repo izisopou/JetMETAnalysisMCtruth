@@ -9,8 +9,8 @@ def UpdatePuppiTuneV15(process, runOnMC=True):
   task = getPatAlgosToolsTask(process)
   from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
   makePuppiesFromMiniAOD(process,True)
-  process.puppi.useExistingWeights = True
-  process.puppiNoLep.useExistingWeights = True
+  process.puppi.useExistingWeights = False
+  process.puppiNoLep.useExistingWeights = False
   if (process.puppi.useExistingWeights==False): print("customizePuppiTune_cff::UpdatePuppiTuneV15: Recomputing PUPPI with Tune v15, slimmedJetsPuppi and slimmedMETsPuppi")
   from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
   runMetCorAndUncFromMiniAOD(process,isData=(not runOnMC),metType="Puppi",postfix="Puppi",jetFlavor="AK4PFPuppi",recoMetFromPFCs=True,pfCandColl=cms.InputTag("puppiForMET"))

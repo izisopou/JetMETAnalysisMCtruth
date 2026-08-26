@@ -4,6 +4,7 @@ source $CMSSW_BASE/src/JetMETAnalysisMCtruth/condor_AK4PUPPI/Setup_FileLocation.
 
 Input=$WithPUFiles
 Output=$Step3Output
+
 mkdir -p $Step3Output
 
 mkdir -p Log
@@ -11,7 +12,8 @@ SubmissionFile=Step3.condor
 
 echo "Universe   = vanilla" > $SubmissionFile
 echo "Executable = `pwd`/Step3ApplyL1.sh" >> $SubmissionFile
-echo "+JobFlavour = microcentury" >> $SubmissionFile
+echo "+JobFlavour = testmatch" >> $SubmissionFile
+echo "requirements = (TARGET.OpSysAndVer =?= \"AlmaLinux9\")" >> $SubmissionFile
 echo "should_transfer_files = NO" >> $SubmissionFile
 # echo "transfer_output_files = DONE.txt" >> $SubmissionFile
 echo >> $SubmissionFile

@@ -9,8 +9,8 @@ ID=$4
 
 source $WorkDir/Setup_CMSSW.sh
 
-cp $WorkDir/Files/L1_output/*.txt .
-cp $WorkDir/Files/L1_output/My*.root .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.root .
 
 echo Input files are: $Files
 
@@ -20,13 +20,14 @@ jet_apply_jec_x \
    -input Input.root \
    -output JRA_jecl1.root \
    -jecpath ./ \
-   -era Winter22Run3 \
+   -era Summer23_V1_MC \
    -levels 1 \
    -algs ak4pfchs \
    -L1FastJet true \
    -saveitree false
 
 cp $CMSSW_BASE/src/JetMETAnalysisMCtruth/JetAnalyzers/config/jra_dr_finebinning.config jra.config
+#cp $CMSSW_BASE/src/JetMETAnalysisMCtruth/JetAnalyzers/config/jra_dr_coarsebinningeta.config jra.config
 
 jet_response_analyzer_x jra.config \
    -input JRA_jecl1.root \
@@ -36,9 +37,9 @@ jet_response_analyzer_x jra.config \
    -nbinsrelrsp 60 \
    -doflavor false \
    -flavorDefinition phys \
-   -MCPUReWeighting MyMCPUHisto_Winter22Run3_Flat2018_PremixedPU.root \
+   -MCPUReWeighting MyMCPUHisto_Run3Summer23_PremixedPU.root \
    -MCPUHistoName pileup \
-   -DataPUReWeighting MyDataPUHisto_2022.root \
+   -DataPUReWeighting MyDataPUHisto_2023_erasC_100bins.root \
    -DataPUHistoName pileup \
    -output jra.root \
    -useweight false \
@@ -49,7 +50,10 @@ jet_response_analyzer_x jra.config \
    -relrspmax 3.0 \
    -jtptmin 0 \
    -doDZcut true \
-   -doNMcut false
+   -doNMcut false \
+   -doVetoMap true \
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 cp jra.root ${Output}/JRA_jecl1${ID}.root
 

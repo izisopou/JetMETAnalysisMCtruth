@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
-from JetMETCorrections.Configuration.JetCorrectionServicesAllAlgos_cff import *
+#from JetMETCorrections.Configuration.JetCorrectionServicesAllAlgos_cff import *
+from JetMETAnalysisMCtruth.JetAnalyzers.JetCorrectionServicesAllAlgos_cff import *
 from JetMETCorrections.Configuration.CorrectedJetProducersAllAlgos_cff import *
 from JetMETCorrections.Configuration.CorrectedJetProducersDefault_cff import *
 from JetMETCorrections.Configuration.CorrectedJetProducers_cff import *

@@ -175,8 +175,11 @@ int main(int argc,char**argv)
    TString         DataPUReWeighting = cl.getValue<TString>      ("DataPUReWeighting",    "");
    bool            mpv               = cl.getValue<bool>         ("mpv",               false);
    TString         readRespVsPileup  = cl.getValue<TString>      ("readRespVsPileup",     "");
+   TString         JetVetoMapRootName= cl.getValue<TString>      ("JetVetoMapRootName",   "");
+   TString         JetVetoMapHistName= cl.getValue<TString>      ("JetVetoMapHistName",   "");
    bool            doDZcut           = cl.getValue<bool>         ("doDZcut",           false);
    bool            doNMcut           = cl.getValue<bool>         ("doNMcut",           false);
+   bool            doVetoMap         = cl.getValue<bool>         ("doVetoMap",         false);
    bool            verbose           = cl.getValue<bool>         ("verbose",           false);
    bool            debug             = cl.getValue<bool>         ("debug",             false);
 
@@ -346,6 +349,8 @@ int main(int argc,char**argv)
       TH1F *EtaDistribution(nullptr);
       TH1F *EtaUncorrPtgt30(nullptr);
       TH1F *EtaCorrPtgt30(nullptr);
+      TH1F *mu_weighted(nullptr);
+      TH1F *rho_weighted(nullptr);
       TH1F *iEtaDistribution(nullptr);
       TH1F *EtaDistributionPU0(nullptr);
       TH1F *EtaDistributionPU[10];
@@ -438,6 +443,11 @@ int main(int argc,char**argv)
       EtaUncorrPtgt30->Sumw2();
       EtaCorrPtgt30 = new TH1F("EtaCorrPtgt30","EtaCorrPtgt30",200,-5,5);
       EtaCorrPtgt30->Sumw2();
+      
+      mu_weighted = new TH1F("mu_weighted","mu_weighted",120,0,120);
+      mu_weighted->Sumw2();
+      rho_weighted = new TH1F("rho_weighted","rho_weighted",120,0,120);
+      rho_weighted->Sumw2();
 
 
       if(!reduceHistograms) {
@@ -575,6 +585,27 @@ int main(int argc,char**argv)
          }//for(int i=0; i<3; i++)
          TPUDistribution = new TH1F("TPUDistribution","TPUDistribution",1000,0,100);
       }
+
+
+      TFile *f_veto;
+      TH2D *h_veto = nullptr;
+      
+      if(doVetoMap){
+          f_veto = new TFile(JetVetoMapRootName,"READ");
+        
+          if (!f_veto || f_veto->IsZombie()) {
+              std::cerr << "Error opening veto map file: " << JetVetoMapRootName << std::endl;
+              return 1;
+          }
+        
+          h_veto = (TH2D*)f_veto->Get(JetVetoMapHistName);
+        
+          if (!h_veto) {
+              std::cerr << "Error: couldn't find 'jetvetomap_all' in " << JetVetoMapHistName << std::endl;
+              return 1;
+          }
+      }
+
       //
       // fill histograms
       //
@@ -623,18 +654,29 @@ int main(int argc,char**argv)
 
  	 //Apply |DZ|<0.2 cm cut 
 	 if(doDZcut){
+	 	if(JRAEvt->recopvz->size()==0) continue;
 		if(fabs(JRAEvt->recopvz->at(0) - JRAEvt->genpvz)>=0.2) continue;	
 	 }
-
+	 
+	 int count = 0;
 
          if(nrefmax>0 && JRAEvt->nref>nrefmax) JRAEvt->nref = nrefmax;
          for (unsigned char iref=0;iref<JRAEvt->nref;iref++) {
 
-         //=== veto region for UL2017 =======
-        //f((JRAEvt->jtphi->at(iref)<-0.5236 && JRAEvt->jtphi->at(iref)>-0.8727 && JRAEvt->jteta->at(iref) >1.31 && JRAEvt->jteta->at(iref)<2.96) || (JRAEvt->jtphi->at(iref)>2.705 && JRAEvt->jtphi->at(iref)<3.1416 && JRAEvt->jteta->at(iref) >0 && JRAEvt->jteta->at(iref)<1.4835) )continue;
-        //=== veto region for UL2018 =======
-       //if((JRAEvt->jtphi->at(iref)<-0.8727 && JRAEvt->jtphi->at(iref)>-1.5708 && JRAEvt->jteta->at(iref) < -1.31 && JRAEvt->jteta->at(iref)> -2.96) || (JRAEvt->jtphi->at(iref)>0.4363 && JRAEvt->jtphi->at(iref)<0.7854 && JRAEvt->jteta->at(iref) >0 && JRAEvt->jteta->at(iref)<1.31) )continue;
+	    if(doVetoMap){
+		  bool flag_IsInVetoRegion = false;
 
+		  for(int ibin=1; ibin<=h_veto->GetNbinsX(); ibin++){
+			  for(int jbin=1; jbin<=h_veto->GetNbinsY(); jbin++){
+				  if(h_veto->GetBinContent(ibin, jbin)!=0){
+					  if( (h_veto->GetXaxis()->GetBinLowEdge(ibin) < JRAEvt->jteta->at(iref)) && (JRAEvt->jteta->at(iref) < h_veto->GetXaxis()->GetBinLowEdge(ibin+1)) && (h_veto->GetYaxis()->GetBinLowEdge(jbin) < JRAEvt->jtphi->at(iref)) && (JRAEvt->jtphi->at(iref) < h_veto->GetYaxis()->GetBinLowEdge(jbin+1))) flag_IsInVetoRegion = true;
+				  }
+			  }
+		  }
+
+		  if(flag_IsInVetoRegion==true) continue;
+
+	    }
 
 	    //Apply Neutral Multiplicity cut for |eta|>3 to remove the double peak
 	    if(doNMcut){
@@ -663,6 +705,7 @@ int main(int argc,char**argv)
             if(JetCorrector) {
                JetCorrector->setJetPt(pt);
                JetCorrector->setJetEta(eta);
+               JetCorrector->setJetPhi(JRAEvt->jtphi->at(iref));
                if (TString(JetInfo::get_correction_levels(levels,L1FastJet)).Contains("L1FastJet")) {
                   if (JRAEvt->jtarea->at(iref)!=0)
                      JetCorrector->setJetA(JRAEvt->jtarea->at(iref));
@@ -706,6 +749,7 @@ int main(int argc,char**argv)
 	    //Cut after L1
 	    /*JetCorrector->setJetPt(pt);
 	    JetCorrector->setJetEta(eta);
+	    JetCorrector->setJetPhi(JRAEvt->jtphi->at(iref));
 	    JetCorrector->setJetA(JRAEvt->jtarea->at(iref));
 	    JetCorrector->setRho(JRAEvt->rho);
 	    vector<float> scaleL1andL2L3;
@@ -749,6 +793,10 @@ int main(int argc,char**argv)
 
 	    if(JRAEvt->jtpt->at(iref)>=30) EtaUncorrPtgt30->Fill(eta,weight);
 	    if( (scale*JRAEvt->jtpt->at(iref))>=30 ) EtaCorrPtgt30->Fill(eta,weight);
+	    
+	    count++;	    
+	    if(count==1) mu_weighted->Fill(JRAEvt->tnpus->at(12),weight);
+	    if(count==1) rho_weighted->Fill(JRAEvt->rho,weight);
 
             if(!reduceHistograms) {
                if(HigherDist->FindBin(scale*pt) < HigherDist->FindBin(ptgen)) HigherDist->Fill(scale*pt,weight);

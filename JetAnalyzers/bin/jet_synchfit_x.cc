@@ -639,7 +639,7 @@ TF2 * doGraphFitting(TGraph2DErrors * graph, bool highPU, string functionType, i
 
       if (functionType=="ak4") {
       //f4->SetRange(0,30,70,100);	//for simple parametrization, fits for pT:30-100GeV
-      f4->SetRange(0,8,70,6500);	//for complex and semi simple parametrization, fits for pT:8-6500GeV
+      f4->SetRange(0,8,120,6800);	//for complex and semi simple parametrization, fits for pT:8-6500GeV
       }
 
       if (functionType=="ak8") {

@@ -4,12 +4,14 @@ source $CMSSW_BASE/src/JetMETAnalysisMCtruth/condor_AK8PUPPI/Setup_FileLocation.
 
 hadd -k -f $Step3Output/Merged.root $Step3Output/JRA_*root
 
+# -algs ak8puppil1 if you have applied L1+L2L3 txt files in SubmitStep3
+
 jet_l2_correction_x \
    -input $Step3Output/Merged.root \
    -algs ak8puppi \
-   -era Winter22Run3 \
+   -era Summer23_V1_MC \
    -output l2.root \
-   -outputDir Files/L2L3_output/ \
+   -outputDir Files/Summer23_V1/L2L3_output/ \
    -makeCanvasVariable AbsCorVsJetPt:JetEta \
    -l2l3 true \
    -batch true \

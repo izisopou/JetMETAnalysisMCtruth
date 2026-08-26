@@ -14,7 +14,7 @@
 //https://github.com/cms-sw/cmssw/blob/6b16de370881dd8ef339d34811b3d1e176c02b80/DataFormats/Candidate/interface/CandMatchMap.h
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -58,8 +58,7 @@ struct MatchLtComp
 
 
 //______________________________________________________________________________
-class MatchRecToGen : public edm::EDProducer
-{
+class MatchRecToGen : public edm::one::EDProducer<> {
 public:
   // construction/destruction
   MatchRecToGen(const edm::ParameterSet& iConfig);

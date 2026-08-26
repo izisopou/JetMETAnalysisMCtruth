@@ -118,7 +118,8 @@ void JetResponseAnalyzerProducer::produce(edm::Event& iEvent,
   edm::Handle<reco::VertexCollection>            vtx;
 
   // JET CORRECTOR
-  jetCorrector_ = (jecLabel_.empty()) ? 0 : JetCorrector::getJetCorrector(jecLabel_,iSetup);
+  //jetCorrector_ = (jecLabel_.empty()) ? 0 : JetCorrector::getJetCorrector(jecLabel_,iSetup);
+  jetCorrector_ =  0 ;
   
   // GENERATOR INFORMATION
   JRAEvt_->pthat  = 0.0;

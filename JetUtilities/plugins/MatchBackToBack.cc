@@ -8,7 +8,7 @@
 
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -36,8 +36,7 @@ using namespace reco;
 ////////////////////////////////////////////////////////////////////////////////
 
 //______________________________________________________________________________
-class MatchBackToBack : public edm::EDProducer
-{
+class MatchBackToBack : public edm::one::EDProducer<> {
 public:
   // construction/destruction
   MatchBackToBack(const edm::ParameterSet& iConfig);

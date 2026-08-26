@@ -22,8 +22,8 @@ else
    hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
 fi
 
-cp $WorkDir/Files/L1_output/My*.root .
-cp $WorkDir/Files/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.root .
 
 echo Current directory content
 ls
@@ -36,25 +36,28 @@ jet_match_x \
    -algo1 ak4pfchs \
    -algo2 ak4pfchs \
    -iftest false \
-   -maxEvts 10000000 \
-   -ApplyJEC false \
+   -maxEvts 20000000 \
+   -ApplyJEC true \
+   -JECpar Summer23_V1_MC_L1FastJet_AK4PFchs.txt \
    -outputPath ./ \
-   -npvRhoNpuBinWidth 10 \
-   -NBinsNpvRhoNpu 9 \
-   -MCPUReWeighting MyMCPUHisto_Winter22Run3_Flat2018_FlatPU.root \
-   -DataPUReWeighting MyDataPUHisto_2022.root \
+   -npvRhoNpuBinWidth 20 \
+   -NBinsNpvRhoNpu 6 \
    -useweight false \
    -nrefmax 3 \
-   -doNotSave false
+   -doNotSave false \
+   -doDZcut false \
+   -doVetoMap true \
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 mv output_ak4pfchs.root ${Output}/Result_${ID}.root
 
-# When you want to apply the L1 txt file to examine the corrected offset replace
+# When you want to examine the raw pileup offset:
 #   -ApplyJEC false \
 #
-# with the following:
+# When you want to examine the corrected pileup offset:
 #
 #   -ApplyJEC true \
-#   -JECpar Winter22Run3_L1FastJet_AK4PFchs.txt \
+#   -JECpar Summer23_V1_MC_L1FastJet_AK4PFchs.txt \
 
 

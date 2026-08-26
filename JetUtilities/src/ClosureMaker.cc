@@ -461,8 +461,8 @@ void ClosureMaker::makeCanvases() {
         if(var == VARIABLES::refpt || var == VARIABLES::jtpt || var == VARIABLES::ptclpt) {
             if(TString(alg).Contains("pf",TString::kIgnoreCase) ||
          TString(alg).Contains("puppi",TString::kIgnoreCase)) {
-                frame->GetXaxis()->SetLimits(15.,Xmax[ih]); //XminPF[ih],Xmax[ih] ak8
-                hClosure[ih]->GetXaxis()->SetLimits(15.,Xmax[ih]);  //XminPF[ih],Xmax[ih] ak8
+                frame->GetXaxis()->SetLimits(1.,Xmax[ih]); //XminPF[ih],Xmax[ih] ak8
+                hClosure[ih]->GetXaxis()->SetLimits(1.,Xmax[ih]);  //XminPF[ih],Xmax[ih] ak8
             }
             else {
                 frame->GetXaxis()->SetLimits(XminCalo[ih],Xmax[ih]);
@@ -553,7 +553,7 @@ void ClosureMaker::makeMergedCanvas() {
     TH1D* frame = new TH1D();
     if(TString(alg).Contains("pf",TString::kIgnoreCase) ||
      TString(alg).Contains("puppi",TString::kIgnoreCase))
-        frame->GetXaxis()->SetLimits(15.,6500.); //XminPF[0],Xmax[0] ak8
+        frame->GetXaxis()->SetLimits(1.,6800.); //XminPF[0],Xmax[0] ak8
     else
         frame->GetXaxis()->SetLimits(XminCalo[0],Xmax[0]);
     frame->GetXaxis()->SetMoreLogLabels();
@@ -593,13 +593,13 @@ void ClosureMaker::makeMergedCanvas() {
        TString(alg).Contains("puppi",TString::kIgnoreCase)) {
             //hClosure[ih]->GetXaxis()->SetLimits(XminPF[ih],Xmax[ih]);
             //hClosure[ih]->GetXaxis()->SetRangeUser(XminPF[ih],Xmax[ih]);
-	    hClosure[ih]->GetXaxis()->SetRangeUser(15.,6500.); //ak8
+	    hClosure[ih]->GetXaxis()->SetRangeUser(1.,6800.); //ak8
 	    hClosure[ih]->GetYaxis()->SetRangeUser(0.92,1.08);
         }
         else {
             //hClosure[ih]->GetXaxis()->SetLimits(XminCalo[ih],Xmax[ih]);
             //hClosure[ih]->GetXaxis()->SetRangeUser(XminCalo[ih],Xmax[ih]);
-	    hClosure[ih]->GetXaxis()->SetRangeUser(30.,6500.);
+	    hClosure[ih]->GetXaxis()->SetRangeUser(1.,6800.);
 	    hClosure[ih]->GetYaxis()->SetRangeUser(0.92,1.08);
         }
         hClosure[ih]->SetStats(kFALSE);

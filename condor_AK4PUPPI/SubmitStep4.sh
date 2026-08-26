@@ -12,7 +12,8 @@ SubmissionFile=Step4.condor
 
 echo "Universe   = vanilla" > $SubmissionFile
 echo "Executable = `pwd`/Step4Closure.sh" >> $SubmissionFile
-echo "+JobFlavour = microcentury" >> $SubmissionFile
+echo "+JobFlavour = testmatch" >> $SubmissionFile
+echo "requirements = (TARGET.OpSysAndVer =?= \"AlmaLinux9\")" >> $SubmissionFile
 echo "should_transfer_files = NO" >> $SubmissionFile
 # echo "transfer_output_files = DONE.txt" >> $SubmissionFile
 echo >> $SubmissionFile

@@ -22,8 +22,8 @@ else
    hadd -f -k PUFile.root `echo $PUFile | tr ':' ' '`
 fi
 
-cp $WorkDir/Files/L1_output/My*.root .
-cp $WorkDir/Files/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.txt .
+cp $WorkDir/Files/Summer23_V1/L1_output/*.root .
 
 echo Current directory content
 ls
@@ -39,24 +39,27 @@ jet_match_x \
    -maxEvts 20000000 \
    -ApplyJEC false \
    -outputPath ./ \
-   -npvRhoNpuBinWidth 10 \
-   -NBinsNpvRhoNpu 9 \
-   -MCPUReWeighting MyMCPUHisto_Winter22Run3_Flat2018_FlatPU.root \
-   -DataPUReWeighting MyDataPUHisto_2022.root \
+   -npvRhoNpuBinWidth 20 \
+   -NBinsNpvRhoNpu 6 \
    -useweight false \
    -nrefmax 3 \
-   -doNotSave false
+   -doNotSave false \
+   -doDZcut false \
+   -doVetoMap true \
+   -JetVetoMapRootName JetVetoMap_2023C.root \
+   -JetVetoMapHistName jetvetomap_all
 
 mv output_ak4puppi.root ${Output}/Result_${ID}.root
 
-# We do not derive L1 corrections for PUPPI but if you want as a test
-# to create an L1 txt file and apply it to examine the corrected offset replace
+# We do not derive L1 corrections for PUPPI but if it is needed then after 
+# creating an L1 txt file, you can apply it to examine the corrected offset
+# by replacing:
 #
 #   -ApplyJEC false \
 #
 # with the following:
 #
 #   -ApplyJEC true \
-#   -JECpar Winter22Run3_L1FastJet_AK4PUPPI.txt \
+#   -JECpar Summer23_V1_MC_L1FastJet_AK4PUPPI.txt \
 
 
